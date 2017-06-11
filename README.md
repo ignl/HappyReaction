@@ -1,7 +1,7 @@
 # HappyReaction
-Sample project for Spring-React app
+Sample project for Spring-React app<br />
 
-How to use:
-run mvn clean:install
-deploy to tomcat and start
-go to src/main/frontend and run 'npm run watch' (for webpack-dev-server)
+How to use:<br />
+run mvn clean:install<br />
+deploy to tomcat and start<br />
+go to src/main/frontend and run 'npm run watch' (for webpack-dev-server)<br />
