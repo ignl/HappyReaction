@@ -1,12 +1,15 @@
 package org.happyreaction.model.helper;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Sort.Direction;
 
 import lombok.Getter;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * This is helper class to keep all information about search request pagination,
@@ -48,19 +51,15 @@ public class SearchConfig implements Serializable {
             List<String> fetchFields, String sortField, Direction ordering) {
         this.firstRow = firstRow;
         this.numberOfRows = numberOfRows;
-        this.filters = filters;
+        this.filters = filters != null ? filters : new HashMap<>();
+        this.fetchFields = fetchFields != null ? fetchFields : new ArrayList<>();
         this.sortField = sortField;
         this.ordering = ordering;
-        this.fetchFields = fetchFields;
     }
 
 
     public boolean isSorted() {
         return ordering != null && sortField != null && sortField.trim().length() != 0;
-    }
-
-    public boolean isAscendingSorting() {
-        return ordering != null && ordering == Direction.ASC;
     }
 
 }

@@ -4,11 +4,16 @@ import java.util.List;
 
 import org.happyreaction.model.base.IEntity;
 import org.happyreaction.model.helper.SearchConfig;
+import org.happyreaction.model.helper.SearchConfigEditor;
 import org.happyreaction.services.base.IService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Abstract base class for CRUD operations. Supports listing entities with pagination,
@@ -19,6 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @param <T> Entity class.
  */
 public abstract class CrudController<T extends IEntity> extends ErrorHandlingController {
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(SearchConfig.class, new SearchConfigEditor());
+	}
 	
 	/**
 	 * @return All entities in database.
@@ -29,14 +39,23 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	}
 	
 	/**
-	 * @param config Pagination, sorting and  information.
+	 * @param searchConfig Pagination, sorting and  information.
 	 * @return All entities that matches search data.
 	 */
-	@RequestMapping(value = "/search", produces = "application/json", method = RequestMethod.GET)
-	public ResponseEntity<List<T>> search(SearchConfig config) {
-		return new ResponseEntity<List<T>>(getService().list(config), HttpStatus.OK);
+	@RequestMapping(value = "/search", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
+	public ResponseEntity<List<T>> search(@RequestParam("searchConfig") SearchConfig searchConfig) {
+		return new ResponseEntity<List<T>>(getService().list(searchConfig), HttpStatus.OK);
 	}
-	
+
+	/**
+	 * @param searchConfig Pagination, sorting and  information.
+	 * @return Number of entities that matches search data
+	 */
+	@RequestMapping(value = "/count", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
+	public ResponseEntity<Long> count(@RequestParam("searchConfig") SearchConfig searchConfig) {
+		return new ResponseEntity<Long>(getService().count(searchConfig), HttpStatus.OK);
+	}
+
 	/**
 	 * Create a new entity.
 	 * 

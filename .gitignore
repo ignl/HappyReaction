@@ -4,3 +4,5 @@ src/main/main.iml
 src/main/frontend/node_maven/
 src/main/frontend/node_modules/
 target/
+src/main/frontend/webapp/bundle.js
+src/main/webapp/npm-debug.log

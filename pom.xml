@@ -471,12 +471,6 @@
 						<phase>generate-resources</phase>
 					</execution>
 					<execution>
-						<id>webpack build</id>
-						<goals>
-							<goal>webpack</goal>
-						</goals>
-					</execution>
-					<execution>
 						<id>npm install</id>
 						<goals>
 							<goal>npm</goal>
@@ -485,6 +479,12 @@
 						<configuration>
 							<arguments>install</arguments>
 						</configuration>
+					</execution>
+					<execution>
+						<id>webpack build</id>
+						<goals>
+							<goal>webpack</goal>
+						</goals>
 					</execution>
 				</executions>
 				<configuration>
