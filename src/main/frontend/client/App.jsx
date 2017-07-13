@@ -1,6 +1,7 @@
 import React from 'react';
-
-
+import { Grid, Menu } from 'semantic-ui-react';
+import { Link, Switch, Route } from 'react-router-dom';
+import Home from './Home.jsx';
 import SearchForm from './SearchForm.jsx';
 import HappyForm from './HappyForm.jsx';
 
@@ -19,9 +20,24 @@ class App extends React.Component {
             {label: "Phone", field: "phone", type: "Boolean"}];
 
         return (
-            <div>
-                <SearchForm labelsAndFields={labelsAndFields} />
-            </div>
+
+            <Grid>
+                <Grid.Column width={4}>
+                    <Menu fluid vertical tabular>
+                        <Menu.Item name='home'><Link to={{ pathname: '/' }}>Home</Link></Menu.Item>
+                        <Menu.Item name='list'><Link to={{ pathname: '/list/' }}>List</Link></Menu.Item>
+                    </Menu>
+                </Grid.Column>
+
+                <Grid.Column stretched width={12}>
+
+                    <Switch>
+                        <Route exact path='/' component={Home}/>
+                        <Route path='/list' component={() => <SearchForm labelsAndFields={labelsAndFields} />}/>
+                    </Switch>
+
+                </Grid.Column>
+            </Grid>
         )
     }
 }
