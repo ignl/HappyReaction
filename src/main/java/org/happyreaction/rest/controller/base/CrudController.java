@@ -10,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Abstract base class for CRUD operations. Supports listing entities with pagination,
@@ -57,6 +54,32 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	}
 
 	/**
+	 * Find entity by its ID.
+	 *
+	 * @param id Entity identifier.
+	 * @param fetchFields Requested fields to fetch when loading entity from database.
+	 * If you need to show some lazy loaded fields - this parameter must be used to fetch them.
+	 *
+	 * @return Entity with all requested fields fetched.
+	 */
+	@RequestMapping(value = "/findById/{id}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
+	public ResponseEntity<T> findById(@PathVariable(value="id") Long id, @RequestParam(value="fetchFields", required=false) List<String> fetchFields) {
+		return new ResponseEntity<T>(getService().findById(id, fetchFields), HttpStatus.OK);
+	}
+
+	/**
+	 * Delete entity by its ID.
+	 *
+	 * @param id Entity identifier.
+	 * @return True if operation is successful.
+	 */
+	@RequestMapping(value = "/delete/{id}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.DELETE)
+	public ResponseEntity delete(@PathVariable("id") Long id) {
+		getService().delete(id);
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
+	/**
 	 * Create a new entity.
 	 * 
 	 * @return True if operation is successful.
@@ -76,40 +99,6 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 		return true;
 	}
 	
-	/**
-	 * Delete entity by its ID.
-	 * 
-	 * @param id Entity identifier.
-	 * @return True if operation is successful.
-	 */
-	public boolean delete(Long id) {
-		getService().delete(id);
-		return true;
-	}
-	
-	/**
-	 * Find entity by its ID.
-	 * 
-	 * @param id Entity identifier.
-	 * @return Entity.
-	 */
-	public T findById(Long id) {
-		return getService().findById(id);
-	}
-	
-	/**
-	 * Find entity by its ID.
-	 * 
-	 * @param id Entity identifier.
-	 * @param fetchFields Requested fields to fetch when loading entity from database. 
-	 * If you need to show some lazy loaded fields - this parameter must be used to fetch them.
-	 * 
-	 * @return Entity with all requested fields fetched.
-	 */
-	public T findById(Long id, List<String> fetchFields) {
-		return getService().findById(id, fetchFields);
-	}
-
 	/**
 	 * @return Concrete implementation of service which is injected in super class.
 	 */

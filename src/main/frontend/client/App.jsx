@@ -19,21 +19,27 @@ class App extends React.Component {
             {label: "Age", field: "age", type: "Integer"},
             {label: "Phone", field: "phone", type: "Boolean"}];
 
+        const EditForm = ({ match }) => {
+            return <HappyForm entityId={match.params.id} labelsAndFields={labelsAndFields} />
+        };
+
         return (
 
             <Grid>
-                <Grid.Column width={4}>
+                <Grid.Column width={3}>
                     <Menu fluid vertical tabular>
                         <Menu.Item name='home'><Link to={{ pathname: '/' }}>Home</Link></Menu.Item>
                         <Menu.Item name='list'><Link to={{ pathname: '/list/' }}>List</Link></Menu.Item>
+                        <Menu.Item name='list'><Link to={{ pathname: '/edit/2' }}>Edit</Link></Menu.Item>
                     </Menu>
                 </Grid.Column>
 
-                <Grid.Column stretched width={12}>
+                <Grid.Column stretched width={13}>
 
                     <Switch>
                         <Route exact path='/' component={Home}/>
                         <Route path='/list' component={() => <SearchForm labelsAndFields={labelsAndFields} />}/>
+                        <Route path="/edit/:id" component={EditForm}/>
                     </Switch>
 
                 </Grid.Column>

@@ -1,19 +1,41 @@
 import React from 'react'
-import { Button, Checkbox, Icon, Table, Loader, Menu } from 'semantic-ui-react'
+import { Button, Icon, Table, Loader, Menu, Divider } from 'semantic-ui-react'
+import { Link, Switch, Route } from 'react-router-dom';
 
-var TableItem = React.createClass({
-    render: function() {
+class TableItem extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleDelete = this.handleDelete.bind(this);
+    }
+
+    handleDelete(e) {
+        const entityName = 'customer';
+        const url = "/rest/".concat(entityName).concat("/delete?id=").concat(this.props.item.id);
+            return fetch(url, {
+                method: 'delete'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Entity deleted successfully!')
+                }
+            });
+    }
+
+    render() {
         const columns = this.props.columns.map((columnProp, index) =>
             <Table.Cell>{this.props.item[columnProp]}</Table.Cell>
         );
-        
+
         return(
             <Table.Row>
                 {columns}
+                <Table.Cell textAlign="center">
+                    <Link to={{ pathname: '/edit/' + this.props.item.id }}><Icon name='write' size='large' /></Link>
+                    <button onClick={e => this.handleDelete(e)}><Icon name='delete' size='large' /></button>
+                </Table.Cell>
             </Table.Row>
         )
     }
-  });
+};
 
 class HappyTable extends React.Component {
     constructor(props) {
@@ -23,8 +45,8 @@ class HappyTable extends React.Component {
         this.handleItemClickLast = this.handleItemClickLast.bind(this);
         this.handleSort = this.handleSort.bind(this);
         this.state = {
-            column: null,
-            direction: null
+            column: undefined,
+            direction: undefined
         }
     }
 
@@ -78,40 +100,44 @@ class HappyTable extends React.Component {
             for (let i = Math.max(1, this.props.currentPage-1); i <= Math.min(lastPage, this.props.currentPage+1); i++) {
                 paginationLinks.push(<Menu.Item active={this.props.currentPage == i} onClick={this.handleItemClick}>{i}</Menu.Item>);
             }
-            const nbColumns = this.props.columns.length;
+            const nbColumns = this.props.columns.length+1;
 
             return (
-                <Table sortable>
-                  <Table.Header>
-                    <Table.Row>
-                      {columnLabels}
-                    </Table.Row>
-                  </Table.Header>
+                <div>
+                    <Divider horizontal>Search results</Divider>
+                    <Table sortable>
+                      <Table.Header>
+                        <Table.Row>
+                          {columnLabels}
+                          <Table.HeaderCell />
+                        </Table.Row>
+                      </Table.Header>
 
-                  <Table.Body>
-                    {listItems}
-                  </Table.Body>
+                      <Table.Body>
+                        {listItems}
+                      </Table.Body>
 
-                  <Table.Footer fullWidth>
-                    <Table.Row>
-                      <Table.HeaderCell colSpan={nbColumns}>
-                          <Menu floated='center' defaultActiveIndex="1" pagination>
-                              <Menu.Item onClick={this.handleItemClickFirst} icon>
-                                  <Icon name='left chevron' />
-                              </Menu.Item>
-                              {paginationLinks}
-                              <Menu.Item onClick={this.handleItemClickLast} icon>
-                                  <Icon name='right chevron' />
-                              </Menu.Item>
-                          </Menu>
-                        <Button floated='right' icon labelPosition='left' primary size='small'>
-                          <Icon name='user' /> New
-                        </Button>
-                      </Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Footer>
+                      <Table.Footer fullWidth>
+                        <Table.Row>
+                          <Table.HeaderCell colSpan={nbColumns}>
+                              <Menu fixed='center' defaultActiveIndex="1" pagination>
+                                  <Menu.Item onClick={this.handleItemClickFirst} icon>
+                                      <Icon name='left chevron' />
+                                  </Menu.Item>
+                                  {paginationLinks}
+                                  <Menu.Item onClick={this.handleItemClickLast} icon>
+                                      <Icon name='right chevron' />
+                                  </Menu.Item>
+                              </Menu>
+                            <Button floated='right' icon labelPosition='left' primary size='small'>
+                              <Icon name='user' /> New
+                            </Button>
+                          </Table.HeaderCell>
+                        </Table.Row>
+                      </Table.Footer>
 
-                </Table>
+                    </Table>
+                </div>
               )
         } else {
             return (

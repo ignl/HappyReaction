@@ -1,9 +1,9 @@
 import React from 'react'
 import { Input, Label, Button, Checkbox, Form, Segment } from 'semantic-ui-react'
-import { Divider } from 'semantic-ui-react'
 import HappyTable from './HappyTable.jsx';
 
 class SearchForm extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {data: undefined, page: 1, totalEntries: 0, searchParams: {}, sortBy: undefined, direction: undefined};
@@ -43,7 +43,7 @@ class SearchForm extends React.Component {
             if(response.ok) {
                 return response.json();
             }
-            throw new Error('Could count number of entities');
+            throw new Error('Could noy count number of entities');
         }).then(function(count) {
             component.setState({totalEntries: count});
 
@@ -94,7 +94,6 @@ class SearchForm extends React.Component {
                         <Button type='submit' primary>Search</Button>
                     </Form>
                 </Segment>
-                <Divider horizontal>Search results</Divider>
                 <HappyTable columnLabels={columnLabels} columns={columns} data={this.state.data} showPageFunction={this.showPage} totalEntries={this.state.totalEntries} rowsPerPage={this.rowsPerPage} currentPage={this.state.page} />
             </div>
         )
