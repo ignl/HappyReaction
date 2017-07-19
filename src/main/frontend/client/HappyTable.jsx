@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Icon, Table, Loader, Menu, Divider } from 'semantic-ui-react'
-import { Link, Switch, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 class TableItem extends React.Component {
     constructor(props) {
@@ -9,13 +9,17 @@ class TableItem extends React.Component {
     }
 
     handleDelete(e) {
+        const component = this;
         const entityName = 'customer';
-        const url = "/rest/".concat(entityName).concat("/delete?id=").concat(this.props.item.id);
+        const url = "/rest/".concat(entityName).concat("/delete/").concat(this.props.item.id);
             return fetch(url, {
                 method: 'delete'
             }).then(response => {
                 if (response.ok) {
-                    alert('Entity deleted successfully!')
+                    component.props.rerenderPageFunction();
+                    alert('Entity deleted successfully!');
+                } else {
+                    alert("Not deleted!");
                 }
             });
     }
@@ -28,9 +32,9 @@ class TableItem extends React.Component {
         return(
             <Table.Row>
                 {columns}
-                <Table.Cell textAlign="center">
-                    <Link to={{ pathname: '/edit/' + this.props.item.id }}><Icon name='write' size='large' /></Link>
-                    <button onClick={e => this.handleDelete(e)}><Icon name='delete' size='large' /></button>
+                <Table.Cell textAlign="right">
+                    <button><Link to={{ pathname: '/edit/' + this.props.item.id }}><Icon name='edit' size='large' /></Link></button>
+                    <button onClick={e => this.handleDelete(e)}><Icon color="red" name='delete' size='large' /></button>
                 </Table.Cell>
             </Table.Row>
         )
@@ -44,6 +48,7 @@ class HappyTable extends React.Component {
         this.handleItemClickFirst = this.handleItemClickFirst.bind(this);
         this.handleItemClickLast = this.handleItemClickLast.bind(this);
         this.handleSort = this.handleSort.bind(this);
+        this.rerenderPage = this.rerenderPage.bind(this);
         this.state = {
             column: undefined,
             direction: undefined
@@ -83,6 +88,10 @@ class HappyTable extends React.Component {
         }
     }
 
+    rerenderPage() {
+        this.props.showPageFunction(1, this.state.column, this.state.direction);
+    }
+
     render() {
         const columnLabels = this.props.columnLabels.map((columnName, index) =>
             <Table.HeaderCell sorted = {this.state.column === columnName ? this.state.direction === 'ASC' ? 'ascending' : 'descending' : null} onClick = {()=>this.handleSort(columnName)}>
@@ -92,7 +101,7 @@ class HappyTable extends React.Component {
         
         if (this.props.data) {
             const listItems = this.props.data.map((item, index) =>
-                <TableItem item={item} columns={this.props.columns} />
+                <TableItem item={item} columns={this.props.columns} rerenderPageFunction={this.rerenderPage} />
             );
 
             const lastPage = Math.ceil(this.props.totalEntries / this.props.rowsPerPage);
@@ -120,7 +129,7 @@ class HappyTable extends React.Component {
                       <Table.Footer fullWidth>
                         <Table.Row>
                           <Table.HeaderCell colSpan={nbColumns}>
-                              <Menu fixed='center' defaultActiveIndex="1" pagination>
+                              <Menu defaultActiveIndex="1" pagination>
                                   <Menu.Item onClick={this.handleItemClickFirst} icon>
                                       <Icon name='left chevron' />
                                   </Menu.Item>
@@ -129,8 +138,8 @@ class HappyTable extends React.Component {
                                       <Icon name='right chevron' />
                                   </Menu.Item>
                               </Menu>
-                            <Button floated='right' icon labelPosition='left' primary size='small'>
-                              <Icon name='user' /> New
+                            <Button floated='right' icon labelPosition='left' primary>
+                              <Icon name='add' /> New
                             </Button>
                           </Table.HeaderCell>
                         </Table.Row>

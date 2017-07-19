@@ -43,7 +43,7 @@ class SearchForm extends React.Component {
             if(response.ok) {
                 return response.json();
             }
-            throw new Error('Could noy count number of entities');
+            throw new Error('Could not count number of entities');
         }).then(function(count) {
             component.setState({totalEntries: count});
 
