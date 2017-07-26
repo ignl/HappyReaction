@@ -23,6 +23,10 @@ class App extends React.Component {
             return <HappyForm entityId={match.params.id} labelsAndFields={labelsAndFields} />
         };
 
+        const NewForm = ({ match }) => {
+            return <HappyForm labelsAndFields={labelsAndFields} />
+        };
+
         return (
 
             <Grid>
@@ -30,7 +34,6 @@ class App extends React.Component {
                     <Menu fluid vertical tabular>
                         <Menu.Item name='home'><Link to={{ pathname: '/' }}>Home</Link></Menu.Item>
                         <Menu.Item name='list'><Link to={{ pathname: '/list/' }}>List</Link></Menu.Item>
-                        <Menu.Item name='list'><Link to={{ pathname: '/edit/2' }}>Edit</Link></Menu.Item>
                     </Menu>
                 </Grid.Column>
 
@@ -40,6 +43,7 @@ class App extends React.Component {
                         <Route exact path='/' component={Home}/>
                         <Route path='/list' component={() => <SearchForm labelsAndFields={labelsAndFields} />}/>
                         <Route path="/edit/:id" component={EditForm}/>
+                        <Route path="/new" component={NewForm}/>
                     </Switch>
 
                 </Grid.Column>

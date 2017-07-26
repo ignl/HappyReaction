@@ -20,7 +20,6 @@ import lombok.Setter;
 @Setter
 public class City  extends BaseEntity {
     
-    /** */
     private static final long serialVersionUID = 1L;
 
     /** City name. */

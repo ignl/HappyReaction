@@ -1,6 +1,7 @@
 package org.happyreaction.rest.controller.base;
 
 import java.util.List;
+import java.util.Map;
 
 import org.happyreaction.model.base.IEntity;
 import org.happyreaction.model.helper.SearchConfig;
@@ -11,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.print.attribute.standard.Media;
 
 /**
  * Abstract base class for CRUD operations. Supports listing entities with pagination,
@@ -60,7 +63,7 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	 * @param fetchFields Requested fields to fetch when loading entity from database.
 	 * If you need to show some lazy loaded fields - this parameter must be used to fetch them.
 	 *
-	 * @return Entity with all requested fields fetched.
+	 * @return Entity with all requested fields fetched and  HttpStatus.OK response if operation is successful.
 	 */
 	@RequestMapping(value = "/findById/{id}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
 	public ResponseEntity<T> findById(@PathVariable(value="id") Long id, @RequestParam(value="fetchFields", required=false) List<String> fetchFields) {
@@ -81,24 +84,26 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 
 	/**
 	 * Create a new entity.
-	 * 
+	 *
 	 * @return True if operation is successful.
 	 */
-	public boolean add(T entity) {
+	@RequestMapping(value = "/add", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
+	public ResponseEntity add(@RequestBody T entity) {
 		getService().add(entity);
-		return true;
+		return new ResponseEntity(HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Update entity fields.
-	 * 
+	 *
 	 * @return True if operation is successful.
 	 */
-	public boolean update(T entity) {
-		getService().update(entity);
-		return true;
+	@RequestMapping(value = "/update/{id}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
+	public ResponseEntity update(@PathVariable Long id, @RequestBody Map<String, Object> updatedFields) {
+		getService().update(id, updatedFields);
+		return new ResponseEntity(HttpStatus.OK);
 	}
-	
+
 	/**
 	 * @return Concrete implementation of service which is injected in super class.
 	 */

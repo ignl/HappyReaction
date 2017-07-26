@@ -1,11 +1,14 @@
 package org.happyreaction.model;
 
+import lombok.Getter;
+
 /**
  * Enum for all operation types.
  * 
  * @author Ignas
  * 
  */
+@Getter
 public enum OperationType {
     
     /** Credit operation. */
@@ -27,12 +30,4 @@ public enum OperationType {
         this.label = label;
     }
     
-    public Integer getId() {
-        return id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
 }

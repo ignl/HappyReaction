@@ -1,55 +1,103 @@
 import React from 'react'
 import { Input, Label, Button, Checkbox, Form } from 'semantic-ui-react'
+import {withRouter} from "react-router-dom";
 
 class HappyForm extends React.Component {
-    constructor(props) {
+
+    constructor(props, context) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.state = {entity: undefined}
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.goBack = this.goBack.bind(this);
+        this.state = {entity: undefined, editedProperties: {}}
     }
 
     componentDidMount() {
         const component = this;
-        const entityName = 'customer';
-        const url = "/rest/".concat(entityName).concat("/findById/").concat(this.props.entityId);
-        fetch(url).then(function(response) {
-            if(response.ok) {
-                return response.json();
-            }
-            throw new Error('Could count number of entities');
-        }).then(function(loadedEntity) {
-            component.setState({entity: loadedEntity});
-        }).catch(function(error) {
-            console.log('There has been a problem with your fetch operation: ' + error.message);
+        if (this.props.entityId) {
+            const entityName = 'customer';
+            const url = "/rest/".concat(entityName).concat("/findById/").concat(this.props.entityId);
+            fetch(url).then(function(response) {
+                if(response.ok) {
+                    return response.json();
+                }
+                throw new Error('Could load an entity');
+            }).then(function(loadedEntity) {
+                component.setState({entity: loadedEntity});
+            }).catch(function(error) {
+                console.log('There has been a problem with your fetch operation: ' + error.message);
+            });
+        } else {
+            component.setState({entity: {}});
+        }
+    }
+
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        var updatedEditedProperties = this.state.editedProperties;
+        updatedEditedProperties[name] = value;
+        this.setState({
+            editedProperties: updatedEditedProperties
         });
     }
 
-
     handleSubmit(event) {
-        alert('A name was submitted:');
+        const entityName = 'customer';
+
+        if (this.state.entity.id) {
+            const url = "/rest/".concat(entityName).concat("/update/").concat(this.state.entity.id);
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(this.state.editedProperties)
+            });
+        } else {
+            const url = "/rest/".concat(entityName).concat("/add");
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(this.state.editedProperties)
+            });
+        }
+
+        alert('Form saved successfully!');
+    }
+
+    goBack(event) {
+        this.props.history.goBack();
+        event.preventDefault();
     }
 
     render() {
-        
-        var props = this.props;
-        var state = this.state;
+        const component = this;
+        const props = this.props;
+        const state = this.state;
         const formFields = props.labelsAndFields.map(function(labelAndField, index) {
             if (state.entity) {
                 if (labelAndField.type == "Integer") {
                     return (
                         <Form.Field>
                             <Label>Integer label</Label>
-                            <Input value={state.entity[labelAndField.field]} />
+                            <Input name={labelAndField.field} defaultValue={state.entity[labelAndField.field]} onChange={component.handleInputChange} />
                         </Form.Field>
                     )
                 } else if (labelAndField.type == "Boolean") {
                     return (
-                        <Checkbox label='Boolean label' />
+                        <Checkbox label='Boolean label' onChange={component.handleInputChange} />
                     )
                 } else if (labelAndField.type == "Object") {
                     return (
-                        <Input
-                            icon={<Icon name='search' inverted circular link />}
+                        <Input name={labelAndField.field} onChange={component.handleInputChange}
+                               icon={<Icon name='search' inverted circular link />}
                             placeholder='Search...'
                         />
                     )
@@ -57,7 +105,7 @@ class HappyForm extends React.Component {
                     return (
                         <Form.Field>
                             <Label>{labelAndField.label}</Label>
-                            <Input value={state.entity[labelAndField.field]} />
+                            <Input name={labelAndField.field} defaultValue={state.entity[labelAndField.field]} onChange={component.handleInputChange} />
                         </Form.Field>
                     )
                 }
@@ -65,13 +113,13 @@ class HappyForm extends React.Component {
         });
         
         return(
-          <Form>
+          <Form onSubmit={this.handleSubmit}>
             {formFields}
             <Button type='submit'>Submit</Button>
-            <Button>Back</Button>
+            <Button onClick={this.goBack}>Back</Button>
           </Form>
         )
     }
 }
 
-export default HappyForm
+export default withRouter(HappyForm)

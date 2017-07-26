@@ -1,18 +1,9 @@
 package org.happyreaction.services.base;
 
-import java.beans.Introspector;
-import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.TypeVariable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.*;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.log4j.Logger;
 import org.happyreaction.model.base.BaseEntity;
 import org.happyreaction.model.base.IEntity;
 import org.happyreaction.model.helper.SearchConfig;
@@ -23,15 +14,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.BooleanPath;
-import com.querydsl.core.types.dsl.DatePath;
-import com.querydsl.core.types.dsl.EnumPath;
-import com.querydsl.core.types.dsl.ListPath;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.PathBuilder;
-import com.querydsl.core.types.dsl.StringPath;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.beans.Introspector;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -47,6 +41,8 @@ import com.querydsl.core.types.dsl.StringPath;
  */
 @Transactional(readOnly = true)
 public abstract class BaseService<T extends IEntity> implements IService<T>, Serializable {
+
+    private final Logger log = Logger.getLogger(BaseService.class.getName());
 
     /**
      * Class version id for serialization. After a change to serialized field
@@ -91,7 +87,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     protected abstract JpaRepository<T, Long> getRepository();
 
     /**
-     * @see org.happyreaction.services.base.IService#add(com.test.domain.base.IEntity)
+     * @see org.happyreaction.services.base.IService#add(IEntity)
      */
     @Override
     @Transactional(readOnly = false)
@@ -100,16 +96,24 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#update(com.test.domain.base.IEntity)
+     * @see org.happyreaction.services.base.IService#update(Long, Map)
      */
     @Override
     @Transactional(readOnly = false)
-    public void update(T entity) {
-        getRepository().save(entity);
+    public void update(Long id, Map<String, Object> updatedFields) {
+        T old = getRepository().findOne(id);
+        try {
+            BeanUtils.copyProperties(old, updatedFields);
+            getRepository().save(old);
+        } catch (IllegalAccessException e) {
+            log.error("Error while updating!", e);
+        } catch (InvocationTargetException e) {
+            log.error("Error while updating!", e);
+        }
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#delete(com.test.domain.base.IEntity)
+     * @see org.happyreaction.services.base.IService#delete(Long)
      */
     @Override
     @Transactional(readOnly = false)
@@ -172,7 +176,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#list(com.SearchConfig.jsf.datatable.PaginationConfiguration)
+     * @see org.happyreaction.services.base.IService#list(SearchConfig)
      */
     @Override
     public List<T> list(final SearchConfig config) {
@@ -183,7 +187,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#count(com.SearchConfig.jsf.datatable.PaginationConfiguration)
+     * @see org.happyreaction.services.base.IService#count(SearchConfig)
      */
     @Override
     public long count(SearchConfig config) {

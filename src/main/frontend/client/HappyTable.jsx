@@ -12,16 +12,16 @@ class TableItem extends React.Component {
         const component = this;
         const entityName = 'customer';
         const url = "/rest/".concat(entityName).concat("/delete/").concat(this.props.item.id);
-            return fetch(url, {
-                method: 'delete'
-            }).then(response => {
-                if (response.ok) {
-                    component.props.rerenderPageFunction();
-                    alert('Entity deleted successfully!');
-                } else {
-                    alert("Not deleted!");
-                }
-            });
+        return fetch(url, {
+            method: 'delete'
+        }).then(response => {
+            if (response.ok) {
+                component.props.rerenderPageFunction();
+                alert('Entity deleted successfully!');
+            } else {
+                alert("Not deleted!");
+            }
+        });
     }
 
     render() {
@@ -138,9 +138,11 @@ class HappyTable extends React.Component {
                                       <Icon name='right chevron' />
                                   </Menu.Item>
                               </Menu>
-                            <Button floated='right' icon labelPosition='left' primary>
-                              <Icon name='add' /> New
-                            </Button>
+                              <Link to={{ pathname: '/new' }}>
+                                    <Button floated='right' icon labelPosition='left' primary>
+                                      <Icon name='add' /> New
+                                    </Button>
+                              </Link>
                           </Table.HeaderCell>
                         </Table.Row>
                       </Table.Footer>

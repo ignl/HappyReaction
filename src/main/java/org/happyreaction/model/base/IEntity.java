@@ -13,7 +13,7 @@ public interface IEntity {
     /**
      * All entities must have an ID field.
      */
-    Serializable getId();
+    Long getId();
     
     /**
      * Returns if entity is already saved in database.
