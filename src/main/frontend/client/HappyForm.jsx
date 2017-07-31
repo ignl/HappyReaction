@@ -2,6 +2,9 @@ import React from 'react'
 import { Input, Label, Button, Checkbox, Form } from 'semantic-ui-react'
 import {withRouter} from "react-router-dom";
 
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
 class HappyForm extends React.Component {
 
     constructor(props, context) {
@@ -82,17 +85,45 @@ class HappyForm extends React.Component {
         const props = this.props;
         const state = this.state;
         const formFields = props.labelsAndFields.map(function(labelAndField, index) {
+
+            const handleDate = function (date) {
+                var updatedEditedProperties = component.state.editedProperties;
+                updatedEditedProperties[labelAndField.field] = date;
+                component.setState({
+                    editedProperties: updatedEditedProperties
+                });
+            };
+
             if (state.entity) {
                 if (labelAndField.type == "Integer") {
                     return (
                         <Form.Field>
-                            <Label>Integer label</Label>
-                            <Input name={labelAndField.field} defaultValue={state.entity[labelAndField.field]} onChange={component.handleInputChange} />
+                            <Label>{labelAndField.label}</Label>
+                            <Input type="number" name={labelAndField.field} defaultValue={state.entity[labelAndField.field]} onChange={component.handleInputChange}/>
                         </Form.Field>
                     )
                 } else if (labelAndField.type == "Boolean") {
                     return (
-                        <Checkbox label='Boolean label' onChange={component.handleInputChange} />
+                        <Form.Field>
+                            <Label>{labelAndField.label}</Label>
+                            <Checkbox toggle />
+                        </Form.Field>
+                    )
+                } else if (labelAndField.type == "Date") {
+                    return (
+                        <Form.Field>
+                            <Label>{labelAndField.label}</Label>
+                            <DatePicker selected={state.entity[labelAndField.field]}
+                                        onChange={handleDate} />
+                        </Form.Field>
+                    )
+                } else if (labelAndField.type == "DateTime") {
+                    return (
+                        <Form.Field>
+                            <Label>{labelAndField.label}</Label>
+                            <DatePicker selected={state.entity[labelAndField.field]}
+                                        onChange={handleDate} />
+                        </Form.Field>
                     )
                 } else if (labelAndField.type == "Object") {
                     return (
@@ -111,7 +142,7 @@ class HappyForm extends React.Component {
                 }
             }
         });
-        
+
         return(
           <Form onSubmit={this.handleSubmit}>
             {formFields}

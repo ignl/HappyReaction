@@ -1,26 +1,16 @@
 package org.happyreaction.model;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
 import org.happyreaction.model.base.BaseEntity;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import lombok.Getter;
-import lombok.Setter;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Customer domain model.
@@ -71,6 +61,12 @@ public class Customer extends BaseEntity {
     /** Customer age. */
     @Column(name = "AGE")
     private Integer age;
+
+    @Column(name = "TESTDATETIME")
+    private LocalDateTime testDateTime;
+
+    @Column(name = "TESTDATE")
+    private LocalDate testDate;
 
     /** Customer perks. */
     @ManyToMany

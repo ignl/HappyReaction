@@ -17,6 +17,8 @@ class App extends React.Component {
             {label: "Address", field: "address", type: "String"},
             {label: "Email", field: "email", type: "String"},
             {label: "Age", field: "age", type: "Integer"},
+            {label: "Date", field: "testDate", type: "Date"},
+            {label: "Date time", field: "testDateTime", type: "DateTime"},
             {label: "Phone", field: "phone", type: "Boolean"}];
 
         const EditForm = ({ match }) => {

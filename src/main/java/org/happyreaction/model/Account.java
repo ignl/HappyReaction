@@ -1,5 +1,6 @@
 package org.happyreaction.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,6 @@ import lombok.Setter;
 @Setter
 public class Account extends BaseEntity {
 
-    /** */
     private static final long serialVersionUID = 1L;
 
     /** Customer. */
@@ -57,10 +57,8 @@ public class Account extends BaseEntity {
     @JsonIgnore
     private List<Operation> operations;
 
-    // TODO java 8 date
     /** Account opening date. */
-    @Temporal(TemporalType.DATE)
     @Column(name = "OPENING_DATE")
-    private Date openingDate;
+    private LocalDate openingDate;
 
 }

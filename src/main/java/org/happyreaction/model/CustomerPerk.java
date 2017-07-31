@@ -21,7 +21,6 @@ import lombok.Setter;
 @Setter
 public class CustomerPerk extends BaseEntity {
 
-    /** */
     private static final long serialVersionUID = 1L;
     
     /** Perk name. */

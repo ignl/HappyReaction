@@ -10,6 +10,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"version"})
+@JsonIgnoreProperties(value = { "version", "transient" })
 public class BaseEntity implements IEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,6 +49,9 @@ public class BaseEntity implements IEntity, Serializable {
     @JsonIgnore
     private Long version;
 
+    /**
+     * @return True if entity is not yet saved to the database.
+     */
     @Override
     public boolean isTransient() {
         return id == null;

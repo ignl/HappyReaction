@@ -6,13 +6,16 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.1.2",
-    "semantic-ui-react": "^0.71.1",
+    "semantic-ui-react": "^0.71.2",
+    "react-datepicker": "^0.52.0",
     "webpack": "^3.3.0"
   },
   "scripts": {
     "watch": "webpack --watch"
   },
   "devDependencies": {
+    "style-loader": "^0.18.2",
+    "css-loader": "^0.28.4",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-polyfill": "^6.23.0",
