@@ -18,7 +18,7 @@ import lombok.Setter;
 @Table(name = "CITY")
 @Getter
 @Setter
-public class City  extends BaseEntity {
+public class City extends BaseEntity {
     
     private static final long serialVersionUID = 1L;
 

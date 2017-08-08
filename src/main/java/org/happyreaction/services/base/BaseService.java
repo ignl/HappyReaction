@@ -2,12 +2,13 @@ package org.happyreaction.services.base;
 
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.*;
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.*;
 import org.apache.log4j.Logger;
 import org.happyreaction.model.base.BaseEntity;
 import org.happyreaction.model.base.IEntity;
 import org.happyreaction.model.helper.SearchConfig;
 import org.happyreaction.repositories.custom.GenericRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,14 +19,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.beans.Introspector;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 /**
@@ -36,13 +38,16 @@ import java.util.Map;
  * @author Ignas
  * 
  * @param <T>
- *            Type of entity.
+ *            Type of an entity.
  * 
  */
 @Transactional(readOnly = true)
 public abstract class BaseService<T extends IEntity> implements IService<T>, Serializable {
 
     private final Logger log = Logger.getLogger(BaseService.class.getName());
+
+    @Autowired
+    private IDynamicTypeService dynamicTypeService;
 
     /**
      * Class version id for serialization. After a change to serialized field
@@ -95,6 +100,40 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
         getRepository().save(entity);
     }
 
+    class EnumAwareConvertUtilsBean extends ConvertUtilsBean {
+        private final EnumConverter enumConverter = new EnumConverter();
+        private final EntityConverter entityConverter = new EntityConverter();
+
+        public Converter lookup(Class clazz) {
+            // no specific converter for this class, so it's neither a String, (which has a default converter),
+            // nor any known object that has a custom converter for it. It might be an enum !
+            if (clazz.isEnum()) {
+                return enumConverter;
+            } else if (BaseEntity.class.isAssignableFrom(clazz)) {
+                return entityConverter;
+            }  else {
+                return super.lookup(clazz);
+            }
+        }
+
+        private class EnumConverter implements Converter {
+            public Object convert(Class type, Object value) {
+                return Enum.valueOf(type, (String) value);
+            }
+        }
+
+        private class EntityConverter implements Converter {
+            @Override
+            public <T> T convert(Class<T> type, Object value) {
+                if (value instanceof Integer) {
+                    return (T)dynamicTypeService.findById(type, ((Integer)value).longValue());
+                }
+                log.warn("Entity can be converted only from a Integer.");
+                return null;
+            }
+        }
+    }
+
     /**
      * @see org.happyreaction.services.base.IService#update(Long, Map)
      */
@@ -103,6 +142,36 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     public void update(Long id, Map<String, Object> updatedFields) {
         T old = getRepository().findOne(id);
         try {
+            Converter dtConverter = new Converter() {
+                @Override
+                public <T> T convert(Class<T> type, Object value) {
+                    if (value instanceof String) {
+                        if (type == LocalDate.class) {
+                            return (T) LocalDate.parse((String)value, DateTimeFormatter.ISO_DATE_TIME);
+                        } else if (type == LocalDateTime.class) {
+                            return (T) LocalDateTime.parse((String)value,  DateTimeFormatter.ISO_DATE_TIME);
+                        }
+                    }
+
+                    return null;
+                }
+            };
+
+            BeanUtilsBean beanUtilsBean = new BeanUtilsBean(new ConvertUtilsBean() {
+                @Override
+                public Object convert(String value, Class clazz) {
+                    if (clazz.isEnum()){
+                        return Enum.valueOf(clazz, value);
+                    } else{
+                        return super.convert(value, clazz);
+                    }
+                }
+            });
+
+
+            BeanUtilsBean.setInstance(new BeanUtilsBean(new EnumAwareConvertUtilsBean()));
+            ConvertUtils.register(dtConverter, LocalDate.class);
+            ConvertUtils.register(dtConverter, LocalDateTime.class);
             BeanUtils.copyProperties(old, updatedFields);
             getRepository().save(old);
         } catch (IllegalAccessException e) {
@@ -157,6 +226,22 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     @Override
     public T findById(Long id, List<String> fetchFields) {
         return ((GenericRepository<T, Long>) getRepository()).findOne(id, fetchFields);
+    }
+
+    /**
+     * @see org.happyreaction.services.base.IService#getEnumConstants(String)
+     */
+    @Override
+    public List<Object> getEnumConstants(String fieldName) {
+        try {
+            Field field = entityClass.getDeclaredField(fieldName);
+            if (field != null && field.getType().isEnum()) {
+                return Arrays.asList(field.getType().getEnumConstants());
+            }
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException("No field with name '" + fieldName + "' was found");
+        }
+        throw new IllegalStateException("No field with name '" + fieldName + "' was found");
     }
 
     /**

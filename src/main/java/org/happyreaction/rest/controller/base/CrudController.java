@@ -1,5 +1,7 @@
 package org.happyreaction.rest.controller.base;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +39,15 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	public ResponseEntity<List<T>> listAll() {
 		return new ResponseEntity<List<T>>(getService().list(), HttpStatus.OK);
 	}
-	
+
+	/**
+	 * @return All enum values of the field.
+	 */
+	@RequestMapping(value = "/allEnumValues", produces = "application/json", method = RequestMethod.GET)
+	public ResponseEntity<List<Object>> listAllEnumValues(@RequestParam("fieldName") String fieldName) {
+		return new ResponseEntity<List<Object>>(getService().getEnumConstants(fieldName), HttpStatus.OK);
+	}
+
 	/**
 	 * @param searchConfig Pagination, sorting and  information.
 	 * @return All entities that matches search data.

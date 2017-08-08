@@ -32,6 +32,10 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
 	     Also registers default Formatters and Validators for use across all @Controllers -->
 	<mvc:annotation-driven />
 	
-	<bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
-	
+	<bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="objectMapper">
+			<bean class="org.happyreaction.config.CustomObjectMapper" />
+		</property>
+	</bean>
+
 </beans>

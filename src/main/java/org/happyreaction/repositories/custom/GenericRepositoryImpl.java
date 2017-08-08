@@ -76,7 +76,7 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
     }
 
     /**
-     * @see com.test.customrepository.GenericRepository#findOne(java.io.Serializable, java.util.List)
+     * @see org.happyreaction.repositories.custom.GenericRepository#findOne(java.io.Serializable, java.util.List)
      */
     @Override
     public final T findOne(ID id, List<String> fetchFields) {
@@ -101,7 +101,7 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
     }
 
     /**
-     * @see com.test.customrepository.GenericRepository#findAll(com.mysema.query.types.Predicate, org.springframework.data.domain.Pageable, java.util.List)
+     * @see org.happyreaction.repositories.custom.GenericRepository#findAll(Predicate, org.springframework.data.domain.Pageable, java.util.List)
      */
     @Override
     public final Page<T> findAll(Predicate predicate, Pageable pageable, List<String> fetchFields) {
@@ -113,7 +113,7 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
 		@SuppressWarnings("unchecked")
 		JPQLQuery<T> query = querydsl.applyPagination(pageable, createQuery(predicate).select(path));
 		for (String fetchField : fetchFields) {
-			query.leftJoin(builder.get(fetchField)).fetch();
+			query.leftJoin(builder.get(fetchField)).fetchJoin();
         }
 
 		return PageableExecutionUtils.getPage(query.fetch(), pageable, new TotalSupplier() {
@@ -128,7 +128,7 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
     /**
      * Same as in supper just uses current class private fields.
      * 
-     * @see org.springframework.data.jpa.repository.support.QueryDslJpaRepository#createQuery(com.mysema.query.types.Predicate[])
+     * @see org.springframework.data.jpa.repository.support.QueryDslJpaRepository#createQuery(Predicate[])
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override

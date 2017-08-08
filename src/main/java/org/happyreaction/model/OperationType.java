@@ -12,12 +12,9 @@ import lombok.Getter;
 public enum OperationType {
     
     /** Credit operation. */
-    CREDIT(1, "operation.credit"), 
+    CREDIT("Credit"),
     /** Debit operation. */
-    DEBIT(2, "operation.debit");
-    
-    /** Enum id. */
-    private Integer id;
+    DEBIT("Debit");
     
     /** Enum label. */
     private String label;
@@ -25,8 +22,7 @@ public enum OperationType {
     /**
      * Constructor.
      */
-    private OperationType(Integer id, String label) {
-        this.id = id;
+    private OperationType(String label) {
         this.label = label;
     }
     

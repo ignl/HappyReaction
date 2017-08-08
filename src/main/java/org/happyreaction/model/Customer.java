@@ -1,6 +1,8 @@
 package org.happyreaction.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;
 import org.happyreaction.model.base.BaseEntity;
@@ -8,6 +10,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +25,7 @@ import java.util.List;
 @Table(name = "CUSTOMER")
 @Getter
 @Setter
-@JsonIgnoreProperties(value = { "accounts", "city", "perks" })
+@JsonIgnoreProperties(value = { "accounts" })
 public class Customer extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -68,9 +71,14 @@ public class Customer extends BaseEntity {
     @Column(name = "TESTDATE")
     private LocalDate testDate;
 
-    /** Customer perks. */
-    @ManyToMany
-    @JoinTable(name = "CUSTOMER_CUSTOMERPERK", joinColumns = @JoinColumn(name = "CUSTOMER_ID"), inverseJoinColumns = @JoinColumn(name = "PERK_ID"))
-    private List<CustomerPerk> perks;
+    @Column(name = "TESTBOOLEAN")
+    private Boolean testBoolean;
+
+    @Column(name = "TESTBIGDECIMAL")
+    private BigDecimal testBigDecimal;
+
+    @Column(name = "TESTENUM")
+    @Enumerated(EnumType.STRING)
+    private OperationType testEnum;
 
 }

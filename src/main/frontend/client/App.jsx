@@ -17,9 +17,13 @@ class App extends React.Component {
             {label: "Address", field: "address", type: "String"},
             {label: "Email", field: "email", type: "String"},
             {label: "Age", field: "age", type: "Integer"},
+            {label: "Phone", field: "phone", type: "String"},
             {label: "Date", field: "testDate", type: "Date"},
             {label: "Date time", field: "testDateTime", type: "DateTime"},
-            {label: "Phone", field: "phone", type: "Boolean"}];
+            {label: "Test number", field: "testBigDecimal", type: "Number"},
+            {label: "City", field: "city", type: "Object", entityToLoad: "city", entityProperty:"name"},
+            {label: "Test enum", field: "testEnum", type: "Enum"},
+            {label: "Test boolean", field: "testBoolean", type: "Boolean"}];
 
         const EditForm = ({ match }) => {
             return <HappyForm entityId={match.params.id} labelsAndFields={labelsAndFields} />

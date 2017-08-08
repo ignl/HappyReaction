@@ -1,9 +1,13 @@
 import React from 'react'
-import { Input, Label, Button, Checkbox, Form } from 'semantic-ui-react'
+import { Input, Label, Button, Checkbox, Segment, Form } from 'semantic-ui-react'
 import {withRouter} from "react-router-dom";
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
+
+import EntitySelect from './EntitySelect.jsx';
+import EnumSelect from './EnumSelect.jsx';
 
 class HappyForm extends React.Component {
 
@@ -19,7 +23,7 @@ class HappyForm extends React.Component {
         const component = this;
         if (this.props.entityId) {
             const entityName = 'customer';
-            const url = "/rest/".concat(entityName).concat("/findById/").concat(this.props.entityId);
+            const url = "/rest/".concat(entityName).concat("/findById/").concat(this.props.entityId).concat("?fetchFields=city").concat("&fetchFields=accounts");
             fetch(url).then(function(response) {
                 if(response.ok) {
                     return response.json();
@@ -35,15 +39,19 @@ class HappyForm extends React.Component {
         }
     }
 
-    handleInputChange(event) {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+    handleInputChange(event, data) {
+        var { name, value } = data;
+        if (data.type == 'checkbox') {
+            value = data.checked;
+        }
 
         var updatedEditedProperties = this.state.editedProperties;
         updatedEditedProperties[name] = value;
+        var entity = this.state.entity;
+        entity[name] = value;
         this.setState({
-            editedProperties: updatedEditedProperties
+            editedProperties: updatedEditedProperties,
+            entity: entity
         });
     }
 
@@ -88,9 +96,12 @@ class HappyForm extends React.Component {
 
             const handleDate = function (date) {
                 var updatedEditedProperties = component.state.editedProperties;
-                updatedEditedProperties[labelAndField.field] = date;
+                updatedEditedProperties[labelAndField.field] = date.utc();
+                var entity = component.state.entity;
+                entity[labelAndField.field] = date.utc();
                 component.setState({
-                    editedProperties: updatedEditedProperties
+                    editedProperties: updatedEditedProperties,
+                    entity: entity
                 });
             };
 
@@ -102,35 +113,59 @@ class HappyForm extends React.Component {
                             <Input type="number" name={labelAndField.field} defaultValue={state.entity[labelAndField.field]} onChange={component.handleInputChange}/>
                         </Form.Field>
                     )
+                } if (labelAndField.type == "Number") {
+                    return (
+                        <Form.Field>
+                            <Label>{labelAndField.label}</Label>
+                            <Input type="number" step="0.01" name={labelAndField.field} defaultValue={state.entity[labelAndField.field]} onChange={component.handleInputChange}/>
+                        </Form.Field>
+                    )
                 } else if (labelAndField.type == "Boolean") {
                     return (
                         <Form.Field>
-                            <Label>{labelAndField.label}</Label>
-                            <Checkbox toggle />
+                            <span>
+                                <Label>{labelAndField.label}</Label><br/>
+                                <Segment compact>
+                                    <Checkbox name={labelAndField.field} checked={state.entity[labelAndField.field]} onChange={component.handleInputChange} />
+                                </Segment>
+                            </span>
                         </Form.Field>
                     )
                 } else if (labelAndField.type == "Date") {
+                    var loadedDate = state.entity[labelAndField.field];
+                    if (loadedDate &&  (typeof loadedDate === 'string' || loadedDate instanceof String)) {
+                        loadedDate = moment(state.entity[labelAndField.field]);
+                    }
                     return (
                         <Form.Field>
                             <Label>{labelAndField.label}</Label>
-                            <DatePicker selected={state.entity[labelAndField.field]}
-                                        onChange={handleDate} />
+                            <DatePicker selected={loadedDate} onChange={handleDate} utcOffset={moment().utcOffset()} />
                         </Form.Field>
                     )
                 } else if (labelAndField.type == "DateTime") {
+                    var loadedDate = state.entity[labelAndField.field];
+                    if (loadedDate &&  (typeof loadedDate === 'string' || loadedDate instanceof String)) {
+                        loadedDate = moment(state.entity[labelAndField.field]);
+                    }
                     return (
                         <Form.Field>
                             <Label>{labelAndField.label}</Label>
-                            <DatePicker selected={state.entity[labelAndField.field]}
-                                        onChange={handleDate} />
+                            <DatePicker selected={loadedDate} onChange={handleDate} utcOffset={moment().utcOffset()} />
                         </Form.Field>
                     )
                 } else if (labelAndField.type == "Object") {
                     return (
-                        <Input name={labelAndField.field} onChange={component.handleInputChange}
-                               icon={<Icon name='search' inverted circular link />}
-                            placeholder='Search...'
-                        />
+                        <Form.Field>
+                            <Label>{labelAndField.label}</Label>
+                            <EntitySelect name={labelAndField.field} selected={state.entity[labelAndField.field].id} onChange={component.handleInputChange} entityToLoad={labelAndField.entityToLoad} entityProperty={labelAndField.entityProperty} />
+                        </Form.Field>
+                    )
+                } else if (labelAndField.type == "Enum") {
+                    return (
+                        <Form.Field>
+                            <Label>{labelAndField.label}</Label>
+                            <EnumSelect name={labelAndField.field} onChange={component.handleInputChange} selected={state.entity[labelAndField.field]} />
+                        </Form.Field>
                     )
                 } else {
                     return (

@@ -25,14 +25,6 @@ insert into OPERATION (ID, VERSION, ACCOUNT_ID, OPERATION_NAME, AMOUNT, OPERATIO
 insert into ACCOUNT (ID, VERSION, CUSTOMER_ID, ACCOUNT_NUMBER, ACCOUNT_ACTIVE, OPENING_DATE) values (203, 1, 2, 'EN547898877', false, '2012-09-12');
 insert into OPERATION (ID, VERSION, ACCOUNT_ID, OPERATION_NAME, AMOUNT, OPERATION_TYPE, OPERATION_DATE, COMMENT) values (2301, 1, 203, 'Savings credit', 2000, 'CREDIT', '2011-12-22 01:44:11', 'Operation was successfull');
 
-insert into CUSTOMER_PERK (ID, VERSION, NAME) values (1, 1, 'Free lunch');
-insert into CUSTOMER_PERK (ID, VERSION, NAME) values (2, 1, 'Birthday gift');
-insert into CUSTOMER_PERK (ID, VERSION, NAME) values (3, 1, 'Parking lot');
-insert into CUSTOMER_PERK (ID, VERSION, NAME) values (4, 1, 'Plane tickets');
-insert into CUSTOMER_CUSTOMERPERK (CUSTOMER_ID, PERK_ID) values (1, 1);
-insert into CUSTOMER_CUSTOMERPERK (CUSTOMER_ID, PERK_ID) values (1, 2);
-insert into CUSTOMER_CUSTOMERPERK (CUSTOMER_ID, PERK_ID) values (1, 4);
-
 insert into CUSTOMER (ID, VERSION, CUSTOMER_NAME, ADDRESS, EMAIL, PHONE, CITY_ID, AGE) values (3, 1, 'Michael Williams1', 'Victoria st 11', 'michael@yahoo.com', '112345456', 2, 41);
 insert into CUSTOMER (ID, VERSION, CUSTOMER_NAME, ADDRESS, EMAIL, PHONE, CITY_ID, AGE) values (4, 1, 'Michael Williams2', 'Victoria st 11', 'michael@yahoo.com', '112345456', 2, 41);
 insert into CUSTOMER (ID, VERSION, CUSTOMER_NAME, ADDRESS, EMAIL, PHONE, CITY_ID, AGE) values (5, 1, 'Michael Williams3', 'Victoria st 11', 'michael@yahoo.com', '112345456', 2, 41);

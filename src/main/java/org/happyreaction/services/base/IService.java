@@ -73,6 +73,15 @@ public interface IService<T extends IEntity> {
      */
     T findById(Long id, List<String> fetchFields);
 
+
+    /**
+     * Find all the enum constants of service entity class field.
+     *
+     * @param fieldName Field name of enum type which we are looking up.
+     * @return All enum constants of an enum field in service entity class.
+     */
+    List<Object> getEnumConstants(String fieldName);
+
     /**
      * @return count of all entities in db.
      */
