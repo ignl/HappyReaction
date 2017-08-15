@@ -1,6 +1,13 @@
 import React from 'react'
-import { Input, Label, Button, Checkbox, Form, Segment } from 'semantic-ui-react'
+import { Input, Label, Button, Form, Segment, Select } from 'semantic-ui-react'
 import HappyTable from './HappyTable.jsx';
+
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
+
+import EntitySelect from './EntitySelect.jsx';
+import EnumSelect from './EnumSelect.jsx';
 
 class SearchForm extends React.Component {
 
@@ -14,8 +21,9 @@ class SearchForm extends React.Component {
         this.rowsPerPage = 5;
     }
 
-    handleChange(event) {
-        this.setState({searchParams: {[event.target.name]: event.target.value}});
+    handleChange(event, data) {
+        var { name, value } = data;
+        this.setState({searchParams: {[name]: value}});
     }
 
     showPage(page, sortBy, direction) {
@@ -32,7 +40,7 @@ class SearchForm extends React.Component {
     }
 
     doSearch() {
-        const searchConfig = {firstRow: (this.state.page-1)*this.rowsPerPage+1, numberOfRows: this.rowsPerPage, filters: this.state.searchParams, sortField: this.state.sortBy, ordering: this.state.direction};
+        const searchConfig = {firstRow: (this.state.page-1)*this.rowsPerPage+1, numberOfRows: this.rowsPerPage, filters: this.state.searchParams, sortField: this.state.sortBy, ordering: this.state.direction, fetchFields: ["city"]};
         const entityName = 'customer';
         const url = "/rest/".concat(entityName).concat("/search?searchConfig=").concat(encodeURIComponent(JSON.stringify(searchConfig)));
         const countUrl = "/rest/".concat(entityName).concat("/count?searchConfig=").concat(encodeURIComponent(JSON.stringify(searchConfig)));
@@ -67,6 +75,7 @@ class SearchForm extends React.Component {
     render() {
 
         const props = this.props;
+        const component = this;
 
         var formFields = [];
         var group = [];
@@ -76,9 +85,53 @@ class SearchForm extends React.Component {
                 group = [];
             }
             const fieldName = labelAndField.field;
-            group.push(<Form.Field>
-                            <Input name={fieldName} value={this.state.searchParams[fieldName]} label={labelAndField.label} onChange={this.handleChange} />
-                        </Form.Field>);
+            const booleanOptions = [{value: true, text: 'Yes'}, {value: false, text: 'No'}];
+
+            const handleDate = function (date) {
+                component.setState({searchParams: {[fieldName]: date.utc()}});
+            };
+
+            if (labelAndField.type == "Integer") {
+                group.push(<Form.Field>
+                    <Label>{labelAndField.label}</Label>
+                    <Input type="number" name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
+                </Form.Field>);
+            } else if (labelAndField.type == "Number") {
+                group.push(<Form.Field>
+                    <Label>{labelAndField.label}</Label>
+                    <Input type="number" step="0.01" name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
+                </Form.Field>);
+            } else if (labelAndField.type == "Boolean") {
+                group.push(<Form.Field>
+                    <Label>{labelAndField.label}</Label>
+                    <Select name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} placeholder='Select' options={booleanOptions} />
+                </Form.Field>);
+            } else if (labelAndField.type == "Date") {
+                group.push(<Form.Field>
+                    <Label>{labelAndField.label}</Label>
+                    <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
+                </Form.Field>);
+            } else if (labelAndField.type == "DateTime") {
+                group.push(<Form.Field>
+                    <Label>{labelAndField.label}</Label>
+                    <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
+                </Form.Field>);
+            } else if (labelAndField.type == "Object") {
+                group.push(<Form.Field>
+                    <Label>{labelAndField.label}</Label>
+                    <EntitySelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} entityToLoad={labelAndField.entityToLoad} entityProperty={labelAndField.entityProperty} />
+                </Form.Field>);
+            } else if (labelAndField.type == "Enum") {
+                group.push(<Form.Field>
+                    <Label>{labelAndField.label}</Label>
+                    <EnumSelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
+                </Form.Field>);
+            } else {
+                group.push(<Form.Field>
+                    <Label>{labelAndField.label}</Label>
+                    <Input name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
+                </Form.Field>);
+            }
         }.bind(this));
         formFields.push(<Form.Group widths='3'> {group} </Form.Group>);
 

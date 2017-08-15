@@ -297,65 +297,75 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
         Map<String, Object> filters = config.getFilters();
         if (filters != null) {
         	// first we process nonstandard filters
-            List<String> filtersToRemove = new ArrayList<String>();
+            List<String> filtersToRemove = new ArrayList<>();
             predicate = processNonStandardFilters(filters, filtersToRemove, entityPath);
             removeUsedFilters(filtersToRemove, filters);
             if (!filters.isEmpty()) {
                 for (Map.Entry<String, Object> entry : filters.entrySet()) {
-                    String key = entry.getKey();
-                    Object filter = entry.getValue();
-                    if (filter != null) {
+                    String fieldName = entry.getKey();
+                    String filter = String.valueOf(entry.getValue());
+                    Class fieldType = null;
+                    try {
+                        Field field = entityClass.getDeclaredField(fieldName);
+                        fieldType = field.getType();
+                    } catch (NoSuchFieldException e) {
+                        log.error("Field " + fieldName + " does not exists for an entity " + entityClass + ". Please check your react code if you really provide correct field name.");
+                    }
+                    if (filter != null && fieldType != null) {
 
                         // if ranged search (from - to fields)
-                        if (key.contains("fromRange-")) {
+                        if (fieldName.contains("fromRange-")) {
                             // CHECKSTYLE:OFF
-                            String parsedKey = key.substring(10);
+                            String parsedKey = fieldName.substring(10);
                             // CHECKSTYLE:ON
-                            if (filter instanceof Number) {
-                                NumberPath path = createNumberPath(entityPath, parsedKey, filter);
-                                predicate = and(predicate, path.goe((Number) filter));
-                            } else if (filter instanceof Date) {
+                            if (Number.class.isAssignableFrom(fieldType)) {
+//                                NumberPath path = createNumberPath(entityPath, parsedKey, filter);
+//                                predicate = and(predicate, path.goe((Number) filter));
+                            } else if (Date.class.isAssignableFrom(fieldType)) {
                                 DatePath path = entityPath.getDate(parsedKey, Date.class);
-                                predicate = and(predicate, path.goe((Date) filter));
+//                                predicate = and(predicate, path.goe((Date) filter));
                             }
-                        } else if (key.contains("toRange-")) {
+                        } else if (fieldName.contains("toRange-")) {
                             // CHECKSTYLE:OFF
-                            String parsedKey = key.substring(8);
+                            String parsedKey = fieldName.substring(8);
                             // CHECKSTYLE:ON
-                            if (filter instanceof Number) {
-                                NumberPath path = createNumberPath(entityPath, parsedKey, filter);
-                                predicate = and(predicate, path.loe((Number) filter));
-                            } else if (filter instanceof Date) {
+                            if (Number.class.isAssignableFrom(fieldType)) {
+//                                NumberPath path = createNumberPath(entityPath, parsedKey, filter);
+//                                predicate = and(predicate, path.loe((Number) filter));
+                            } else if (Date.class.isAssignableFrom(fieldType)) {
                                 DatePath path = entityPath.getDate(parsedKey, Date.class);
-                                predicate = and(predicate, path.loe((Date) filter));
+//                                predicate = and(predicate, path.loe((Date) filter));
                             }
-                        } else if (key.contains("list-")) {
+                        } else if (fieldName.contains("list-")) {
                             // CHECKSTYLE:OFF
                             // if searching elements from list
-                            String parsedKey = key.substring(5);
+                            String parsedKey = fieldName.substring(5);
                             // CHECKSTYLE:ON
                             ListPath path = entityPath.getList(parsedKey, filter.getClass());
                             predicate = and(predicate, path.contains(filter));
                         } else { // if not ranged search
-                            if (filter instanceof String) {
-                                StringPath path = entityPath.getString(key);
+                            if (String.class == fieldType) {
+                                StringPath path = entityPath.getString(fieldName);
                                 String filterString = (String) filter;
                                 predicate = and(predicate, path.startsWithIgnoreCase(filterString));
-                            } else if (filter instanceof Date) {
-                                DatePath path = entityPath.getDate(key, Date.class);
-                                predicate = and(predicate, path.eq(filter));
-                            } else if (filter instanceof Number) {
-                                NumberPath path = createNumberPath(entityPath, key, filter);
-                                predicate = and(predicate, path.eq(filter));
-                            } else if (filter instanceof Boolean) {
-                                BooleanPath path = entityPath.getBoolean(key);
-                                predicate = and(predicate, path.eq((Boolean) filter));
-                            } else if (filter instanceof Enum) {
-                                EnumPath path = entityPath.getEnum(key, Enum.class);
-                                predicate = and(predicate, path.eq(filter));
-                            } else if (BaseEntity.class.isAssignableFrom(filter.getClass())) {
-                                PathBuilder path = entityPath.get(key);
-                                predicate = and(predicate, path.eq(filter));
+                            } else if (LocalDate.class.isAssignableFrom(fieldType)) {
+                                DatePath path = entityPath.getDate(fieldName, Date.class);
+                                predicate = and(predicate, path.eq(LocalDate.parse(filter, DateTimeFormatter.ISO_DATE_TIME)));
+                            } else if (LocalDateTime.class.isAssignableFrom(fieldType)) {
+                                DatePath path = entityPath.getDate(fieldName, Date.class);
+                                predicate = and(predicate, path.eq(LocalDateTime.parse(filter, DateTimeFormatter.ISO_DATE_TIME)));
+                            } else if (Number.class.isAssignableFrom(fieldType)) {
+                                NumberPath path = entityPath.getNumber(fieldName, fieldType);
+                                predicate = and(predicate, path.eq(getNumber(fieldType, filter)));
+                            } else if (Boolean.class == fieldType) {
+                                BooleanPath path = entityPath.getBoolean(fieldName);
+                                predicate = and(predicate, path.eq(Boolean.valueOf(filter)));
+                            } else if (Enum.class.isAssignableFrom(fieldType)) {
+                                EnumPath path = entityPath.getEnum(fieldName, Enum.class);
+                                predicate = and(predicate, path.eq(Enum.valueOf(fieldType, filter.trim().toUpperCase())));
+                            } else if (BaseEntity.class.isAssignableFrom(fieldType)) {
+                                PathBuilder path = entityPath.get(fieldName + ".id");
+                                predicate = and(predicate, path.eq(Long.valueOf(filter)));
                             }
                         }
 
@@ -406,27 +416,22 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
         }
     }
 
-    /**
-     * If filter is number its required to know its concrete class so this
-     * private helper method creates and returns predicate based on concrete
-     * class.
-     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private NumberPath createNumberPath(PathBuilder entityPath, String key, Object filter) {
-        if (filter instanceof BigDecimal) {
-            return entityPath.getNumber(key, BigDecimal.class);
-        } else if (filter instanceof Long) {
-            return entityPath.getNumber(key, Long.class);
-        } else if (filter instanceof Integer) {
-            return entityPath.getNumber(key, Integer.class);
-        } else if (filter instanceof Double) {
-            return entityPath.getNumber(key, Double.class);
-        } else if (filter instanceof Float) {
-            return entityPath.getNumber(key, Float.class);
-        } else if (filter instanceof Byte) {
-            return entityPath.getNumber(key, Byte.class);
-        } else if (filter instanceof Short) {
-            return entityPath.getNumber(key, Short.class);
+    private Number getNumber(Class clazz, String filter) {
+        if (BigDecimal.class.isAssignableFrom(clazz)) {
+            return new BigDecimal(filter);
+        } else if (Long.class.isAssignableFrom(clazz)) {
+            return new BigDecimal(filter);
+        } else if (Integer.class.isAssignableFrom(clazz)) {
+            return new BigDecimal(filter);
+        } else if (Double.class.isAssignableFrom(clazz)) {
+            return new BigDecimal(filter);
+        } else if (Float.class.isAssignableFrom(clazz)) {
+            return new BigDecimal(filter);
+        } else if (Byte.class.isAssignableFrom(clazz)) {
+            return new BigDecimal(filter);
+        } else if (Short.class.isAssignableFrom(clazz)) {
+            return new BigDecimal(filter);
         } else {
             throw new IllegalStateException("Unknown number type in search filter. Supported type: BigDecimal, Long, Integer, Double, Float, Byte, Short");
         }

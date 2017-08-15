@@ -28,7 +28,7 @@ class EnumSelect extends React.Component {
         const props = this.props;
         const state = this.state;
         return(
-            <Select name={props.name} value={props.selected} onChange={props.onChange} placeholder='Select' options={state.enumValues} />
+            <Select name={props.name} value={props.value} onChange={props.onChange} placeholder='Select' options={state.enumValues} />
         )
     }
 }

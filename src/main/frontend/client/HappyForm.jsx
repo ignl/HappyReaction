@@ -28,7 +28,7 @@ class HappyForm extends React.Component {
                 if(response.ok) {
                     return response.json();
                 }
-                throw new Error('Could load an entity');
+                throw new Error('Could not load an entity');
             }).then(function(loadedEntity) {
                 component.setState({entity: loadedEntity});
             }).catch(function(error) {
@@ -157,14 +157,14 @@ class HappyForm extends React.Component {
                     return (
                         <Form.Field>
                             <Label>{labelAndField.label}</Label>
-                            <EntitySelect name={labelAndField.field} selected={state.entity[labelAndField.field].id} onChange={component.handleInputChange} entityToLoad={labelAndField.entityToLoad} entityProperty={labelAndField.entityProperty} />
+                            <EntitySelect name={labelAndField.field} value={state.entity[labelAndField.field].id} onChange={component.handleInputChange} entityToLoad={labelAndField.entityToLoad} entityProperty={labelAndField.entityProperty} />
                         </Form.Field>
                     )
                 } else if (labelAndField.type == "Enum") {
                     return (
                         <Form.Field>
                             <Label>{labelAndField.label}</Label>
-                            <EnumSelect name={labelAndField.field} onChange={component.handleInputChange} selected={state.entity[labelAndField.field]} />
+                            <EnumSelect name={labelAndField.field} onChange={component.handleInputChange} value={state.entity[labelAndField.field]} />
                         </Form.Field>
                     )
                 } else {
