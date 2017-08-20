@@ -72,7 +72,7 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
     }
 
     /**
-     * @see org.happyreaction.repositories.custom.GenericRepository#findOne(java.io.Serializable, java.util.List)
+     * {@inheritDoc}
      */
     @Override
     public final T findOne(ID id, List<String> fetchFields) {
@@ -97,7 +97,7 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
     }
 
     /**
-     * @see org.happyreaction.repositories.custom.GenericRepository#findAll(Predicate, org.springframework.data.domain.Pageable, java.util.List)
+     * {@inheritDoc}
      */
     @Override
     public final Page<T> findAll(Predicate predicate, Pageable pageable, List<String> fetchFields) {
@@ -122,9 +122,9 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
     }
 
     /**
-     * Same as in supper just uses current class private fields.
+     *
      * 
-     * @see org.springframework.data.jpa.repository.support.QueryDslJpaRepository#createQuery(Predicate[])
+     * {@inheritDoc}
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override

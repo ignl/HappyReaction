@@ -34,7 +34,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
 	
 	<bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 		<property name="objectMapper">
-			<bean class="org.happyreaction.config.CustomObjectMapper" />
+			<bean class="org.happyreaction.jackson.databind.CustomObjectMapper" />
 		</property>
 	</bean>
 

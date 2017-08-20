@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.happyreaction.model.base.IEntity;
-import org.happyreaction.model.helper.SearchConfig;
+import org.happyreaction.services.base.search.SearchConfig;
 
 
 /**
@@ -28,9 +28,16 @@ public interface Service<T extends IEntity> {
      * Update entity.
      *
      * @param id ID of the entity that is updated.
-     * @param updatedFields Fields to update.
+     * @param updatedFields Fields with new values to update.
      */
     void update(Long id, Map<String, Object> updatedFields);
+
+    /**
+     * Update entity.
+     *
+     * @param entity Entity with modifications to update in db.
+     */
+    void update(T entity);
 
     /**
      * Delete entity.

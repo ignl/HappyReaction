@@ -23,7 +23,7 @@ public class AccountService extends BaseService<Account> {
     private AccountRepository repository;
 
     /**
-     * @see org.happyreaction.services.base.BaseService#getRepository()
+     * {@inheritdoc}
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override

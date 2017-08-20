@@ -1,5 +1,10 @@
 package org.happyreaction.rest.controller.base;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,35 +14,17 @@ import java.util.List;
  * @author Ignas
  *
  */
+@RequiredArgsConstructor
+@Getter
+@Setter
 public class ErrorDTO {
 
     /** Description. */
-    private String description;
+    @NonNull
+    private final String description;
 
     /** Details. */
     private List<String> details = new ArrayList<String>();
-
-    /** Constructor. */
-    public ErrorDTO(String description) {
-        super();
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<String> getDetails() {
-        return details;
-    }
-
-    public void setDetails(List<String> details) {
-        this.details = details;
-    }
 
     /** Add single detail to details list. */
     public void addDetail(String detail) {

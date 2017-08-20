@@ -30,7 +30,7 @@ class TableItem extends React.Component {
             <Table.Row>
                 {columns}
                 <Table.Cell textAlign="right">
-                    <button><Link to={{ pathname: '/edit/' + this.props.item.id }}><Icon name='edit' size='large' /></Link></button>
+                    <button><Link to={{ pathname: '/' + component.props.entityName + '/edit/' + this.props.item.id }}><Icon name='edit' size='large' /></Link></button>
                     <button onClick={e => this.handleDelete(e)}><Icon color="red" name='delete' size='large' /></button>
                 </Table.Cell>
             </Table.Row>
@@ -39,7 +39,7 @@ class TableItem extends React.Component {
 
     handleDelete(e) {
         const component = this;
-        const entityName = 'customer';
+        const entityName = this.props.entityName;
         const url = "/rest/".concat(entityName).concat("/delete/").concat(this.props.item.id);
         return fetch(url, {
             method: 'delete'
@@ -114,7 +114,7 @@ class HappyTable extends React.Component {
         
         if (this.props.data) {
             const listItems = this.props.data.map((item, index) =>
-                <TableItem item={item} columnFields={this.props.columnFields} rerenderPageFunction={this.rerenderPage} />
+                <TableItem item={item} columnFields={this.props.columnFields} rerenderPageFunction={this.rerenderPage} entityName={this.props.entityName} />
             );
 
             const lastPage = Math.ceil(this.props.totalEntries / this.props.rowsPerPage);
@@ -151,7 +151,7 @@ class HappyTable extends React.Component {
                                       <Icon name='right chevron' />
                                   </Menu.Item>
                               </Menu>
-                              <Link to={{ pathname: '/new' }}>
+                              <Link to={{ pathname: '/' + this.props.entityName + '/new' }}>
                                     <Button floated='right' icon labelPosition='left' primary>
                                       <Icon name='add' /> New
                                     </Button>

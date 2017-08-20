@@ -23,7 +23,7 @@ public class CustomerRestController extends CrudController<Customer> {
     private CustomerService customerService;
 
 	/**
-	 * @see org.happyreaction.rest.controller.base.CrudController#getService()
+	 * {@inheritdoc}
 	 */
 	@Override
 	public Service<Customer> getService() {

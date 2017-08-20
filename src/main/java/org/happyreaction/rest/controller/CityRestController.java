@@ -23,7 +23,7 @@ public class CityRestController extends CrudController<City> {
     private CityService cityService;
 
 	/**
-	 * @see CrudController#getService()
+	 * {@inheritdoc}
 	 */
 	@Override
 	public Service<City> getService() {

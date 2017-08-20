@@ -23,7 +23,7 @@ public class OperationRestController extends CrudController<Operation> {
     private OperationService operationService;
 
 	/**
-	 * @see org.happyreaction.rest.controller.base.CrudController#getService()
+	 * {@inheritdoc}
 	 */
 	@Override
 	public Service<Operation> getService() {

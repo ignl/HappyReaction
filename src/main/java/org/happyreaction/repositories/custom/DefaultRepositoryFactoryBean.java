@@ -9,8 +9,7 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
 /**
- * This class is used when you use DefaultRepositoryFactory to override default
- * repository factory class.
+ * This class is used when DefaultRepositoryFactory overrides default repository factory class.
  * 
  * @author Ignas
  *
@@ -28,6 +27,9 @@ public class DefaultRepositoryFactoryBean<T extends JpaRepository<S, ID>, S, ID 
 		super(repositoryInterface);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected RepositoryFactorySupport createRepositoryFactory(EntityManager em) {
 		return new DefaultRepositoryFactory(em);

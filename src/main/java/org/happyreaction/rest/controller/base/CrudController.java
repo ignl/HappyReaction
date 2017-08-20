@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.happyreaction.model.base.IEntity;
-import org.happyreaction.model.helper.SearchConfig;
-import org.happyreaction.model.helper.SearchConfigEditor;
+import org.happyreaction.services.base.search.SearchConfig;
+import org.happyreaction.services.base.search.SearchConfigEditor;
 import org.happyreaction.services.base.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +23,10 @@ import org.springframework.web.bind.annotation.*;
  */
 public abstract class CrudController<T extends IEntity> extends ErrorHandlingController {
 
+	/**
+	 * Register property editor for {@link SearchConfig} class.
+	 * @param binder WebDataBinder is a DataBinder that binds request parameter to JavaBean objects.
+	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(SearchConfig.class, new SearchConfigEditor());

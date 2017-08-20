@@ -21,6 +21,12 @@ class SearchForm extends React.Component {
         this.rowsPerPage = 5;
     }
 
+    getDefaultProps() {
+        return {
+            fetchFields: []
+        };
+    }
+
     handleChange(event, data) {
         const loadedSearchParams =  this.state.searchParams;
         const { name, value } = data;
@@ -42,8 +48,8 @@ class SearchForm extends React.Component {
     }
 
     doSearch() {
-        const searchConfig = {firstRow: (this.state.page-1)*this.rowsPerPage+1, numberOfRows: this.rowsPerPage, filters: this.state.searchParams, sortField: this.state.sortBy, ordering: this.state.direction, fetchFields: ["city"]};
-        const entityName = 'customer';
+        const searchConfig = {firstRow: (this.state.page-1)*this.rowsPerPage+1, numberOfRows: this.rowsPerPage, filters: this.state.searchParams, sortField: this.state.sortBy, ordering: this.state.direction, fetchFields: this.props.fetchFields};
+        const entityName = this.props.entityName;
         const url = "/rest/".concat(entityName).concat("/search?searchConfig=").concat(encodeURIComponent(JSON.stringify(searchConfig)));
         const countUrl = "/rest/".concat(entityName).concat("/count?searchConfig=").concat(encodeURIComponent(JSON.stringify(searchConfig)));
 
@@ -163,7 +169,7 @@ class SearchForm extends React.Component {
                 } else if (fieldObj.type == "Enum") {
                     group.push(<Form.Field>
                         <Label>{fieldObj.label}</Label>
-                        <EnumSelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
+                        <EnumSelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} entityName={this.props.entityName} />
                     </Form.Field>);
                 } else {
                     group.push(<Form.Field>
@@ -176,10 +182,6 @@ class SearchForm extends React.Component {
         }.bind(this));
         formFields.push(<Form.Group widths='3'> {group} </Form.Group>);
 
-        const columnLabels = ["Name", "Address", "Email", "Phone", "City", "Test enum", "Date", "Boolean", "Age", "Test number"];
-        const columns = ["name", "address", "email", "phone", "city.name", "testEnum", "date", "testBoolean", "age", "testNumber"];
-
-
         return(
             <div>
                 <Segment>
@@ -188,7 +190,7 @@ class SearchForm extends React.Component {
                         <Button type='submit' primary>Search</Button>
                     </Form>
                 </Segment>
-                <HappyTable columnFields={this.props.columnFields} data={this.state.data} showPageFunction={this.showPage} totalEntries={this.state.totalEntries} rowsPerPage={this.rowsPerPage} currentPage={this.state.page} />
+                <HappyTable columnFields={this.props.columnFields} data={this.state.data} showPageFunction={this.showPage} totalEntries={this.state.totalEntries} rowsPerPage={this.rowsPerPage} currentPage={this.state.page} entityName={this.props.entityName} />
             </div>
         )
     }

@@ -23,7 +23,7 @@ public class CustomerService extends BaseService<Customer> {
     private CustomerRepository repository;
     
     /**
-     * @see org.happyreaction.services.base.BaseService#getRepository()
+     * {@inheritDoc}
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override

@@ -23,7 +23,7 @@ public class OperationService extends BaseService<Operation> implements Service<
     private OperationRepository repository;
     
     /**
-     * @see org.happyreaction.services.base.BaseService#getRepository()
+     * {@inheritDoc}
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override

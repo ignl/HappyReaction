@@ -1,7 +1,5 @@
 package org.happyreaction.model.base;
 
-import java.io.Serializable;
-
 /**
  * Interface for all JPA entities to implement.
  * 

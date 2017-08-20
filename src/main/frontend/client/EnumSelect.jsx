@@ -10,7 +10,7 @@ class EnumSelect extends React.Component {
 
     componentDidMount() {
         const component = this;
-        const entityName = "customer";
+        const entityName = this.props.entityName;
         const enumField = this.props.name;
         const url = "/rest/".concat(entityName).concat("/allEnumValues?fieldName=").concat(enumField);
         fetch(url).then(function(response) {

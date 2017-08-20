@@ -4,7 +4,7 @@ import org.happyreaction.model.Customer;
 import org.happyreaction.repositories.custom.GenericRepository;
 
 /**
- * Spring Data repository interface for {@link Customer} entity. Implementation created by spring.
+ * Spring Data repository interface for {@link Customer} entity. Implementation is created by spring.
  * 
  * @author Ignas
  *

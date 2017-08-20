@@ -24,7 +24,7 @@ public class AccountRestController extends CrudController<Account> {
 
 
 	/**
-	 * @see org.happyreaction.rest.controller.base.CrudController#getService()
+	 * {@inheritdoc}
 	 */
 	@Override
 	public Service<Account> getService() {

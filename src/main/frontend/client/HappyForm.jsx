@@ -22,8 +22,15 @@ class HappyForm extends React.Component {
     componentDidMount() {
         const component = this;
         if (this.props.entityId) {
-            const entityName = 'customer';
-            const url = "/rest/".concat(entityName).concat("/findById/").concat(this.props.entityId).concat("?fetchFields=city").concat("&fetchFields=accounts");
+            const entityName = this.props.entityName;
+            const url = "/rest/".concat(entityName).concat("/findById/").concat(this.props.entityId);
+            for (var i = 0; i < this.props.fetchFields.length; i++) {
+                if (i == 0) {
+                    url.concat("?fetchFields=").concat(this.props.fetchFields[i]);
+                } else {
+                    url.concat("&fetchFields=").concat(this.props.fetchFields[i]);
+                }
+            }
             fetch(url).then(function(response) {
                 if(response.ok) {
                     return response.json();
@@ -56,7 +63,7 @@ class HappyForm extends React.Component {
     }
 
     handleSubmit(event) {
-        const entityName = 'customer';
+        const entityName = this.props.entityName;
 
         if (this.state.entity.id) {
             const url = "/rest/".concat(entityName).concat("/update/").concat(this.state.entity.id);
@@ -154,17 +161,18 @@ class HappyForm extends React.Component {
                         </Form.Field>
                     )
                 } else if (fieldObj.type == "Object") {
+                    const objectId = state.entity[fieldObj.field] ? state.entity[fieldObj.field].id : undefined;
                     return (
                         <Form.Field>
                             <Label>{fieldObj.label}</Label>
-                            <EntitySelect name={fieldObj.field} value={state.entity[fieldObj.field].id} onChange={component.handleInputChange} entityToLoad={fieldObj.entityToLoad} entityProperty={fieldObj.entityProperty} />
+                            <EntitySelect name={fieldObj.field} value={objectId} onChange={component.handleInputChange} entityToLoad={fieldObj.entityToLoad} entityProperty={fieldObj.entityProperty} />
                         </Form.Field>
                     )
                 } else if (fieldObj.type == "Enum") {
                     return (
                         <Form.Field>
                             <Label>{fieldObj.label}</Label>
-                            <EnumSelect name={fieldObj.field} onChange={component.handleInputChange} value={state.entity[fieldObj.field]} />
+                            <EnumSelect name={fieldObj.field} onChange={component.handleInputChange} value={state.entity[fieldObj.field]} entityName={this.props.entityName} />
                         </Form.Field>
                     )
                 } else {

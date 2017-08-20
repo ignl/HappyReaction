@@ -4,8 +4,7 @@ import org.happyreaction.model.City;
 import org.happyreaction.repositories.custom.GenericRepository;
 
 /**
- * Spring Data repository interface for {@link City} entity. Implementation
- * created by spring.
+ * Spring Data repository interface for {@link City} entity. Implementation is created by spring.
  * 
  * @author Ignas
  * 

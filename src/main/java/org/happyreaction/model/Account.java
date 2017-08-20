@@ -1,27 +1,14 @@
 package org.happyreaction.model;
 
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-
-import org.happyreaction.model.base.BaseEntity;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.happyreaction.model.base.BaseEntity;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Account domain model.
@@ -40,7 +27,6 @@ public class Account extends BaseEntity {
     /** Customer. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CUSTOMER_ID")
-    @JsonIgnore
     private Customer customer;
 
     /** Account number. */

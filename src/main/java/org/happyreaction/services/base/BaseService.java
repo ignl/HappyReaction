@@ -6,9 +6,8 @@ import org.apache.commons.beanutils.*;
 import org.apache.log4j.Logger;
 import org.happyreaction.model.base.BaseEntity;
 import org.happyreaction.model.base.IEntity;
-import org.happyreaction.model.helper.SearchConfig;
+import org.happyreaction.services.base.search.SearchConfig;
 import org.happyreaction.repositories.custom.GenericRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,15 +30,13 @@ import java.util.*;
 
 
 /**
- * Base service that other persistence services can extend. It provides all
- * common crud operations. Also provide default search capabilities which work
- * nicely with composite jsf search components.
- * 
+ * Base service that other persistence services can extend. It provides all common crud and search operations out of box.
+ *
  * @author Ignas
- * 
+ *
  * @param <T>
  *            Type of an entity.
- * 
+ *
  */
 @Transactional(readOnly = true)
 public abstract class BaseService<T extends IEntity> implements Service<T>, Serializable {
@@ -47,9 +44,6 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     private static final long serialVersionUID = 1L;
 
     private final Logger log = Logger.getLogger(BaseService.class.getName());
-
-    @Autowired
-    private DynamicTypeService dynamicTypeService;
 
     // CHECKSTYLE:OFF
     /** Entity class of service. */
@@ -87,7 +81,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     protected abstract JpaRepository<T, Long> getRepository();
 
     /**
-     * @see Service#add(IEntity)
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
@@ -95,78 +89,23 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
         getRepository().save(entity);
     }
 
-    class EnumAwareConvertUtilsBean extends ConvertUtilsBean {
-        private final EnumConverter enumConverter = new EnumConverter();
-        private final EntityConverter entityConverter = new EntityConverter();
-
-        public Converter lookup(Class clazz) {
-            // no specific converter for this class, so it's neither a String, (which has a default converter),
-            // nor any known object that has a custom converter for it. It might be an enum !
-            if (clazz.isEnum()) {
-                return enumConverter;
-            } else if (BaseEntity.class.isAssignableFrom(clazz)) {
-                return entityConverter;
-            }  else {
-                return super.lookup(clazz);
-            }
-        }
-
-        private class EnumConverter implements Converter {
-            public Object convert(Class type, Object value) {
-                return Enum.valueOf(type, (String) value);
-            }
-        }
-
-        private class EntityConverter implements Converter {
-            @Override
-            public <T> T convert(Class<T> type, Object value) {
-                if (value instanceof Integer) {
-                    return (T)dynamicTypeService.findById(type, ((Integer)value).longValue());
-                }
-                log.warn("Entity can be converted only from a Integer.");
-                return null;
-            }
-        }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void update(T entity) {
+        getRepository().save(entity);
     }
 
     /**
-     * @see Service#update(Long, Map)
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public void update(Long id, Map<String, Object> updatedFields) {
         T old = getRepository().findOne(id);
         try {
-            Converter dtConverter = new Converter() {
-                @Override
-                public <T> T convert(Class<T> type, Object value) {
-                    if (value instanceof String) {
-                        if (type == LocalDate.class) {
-                            return (T) LocalDate.parse((String)value, DateTimeFormatter.ISO_DATE_TIME);
-                        } else if (type == LocalDateTime.class) {
-                            return (T) LocalDateTime.parse((String)value,  DateTimeFormatter.ISO_DATE_TIME);
-                        }
-                    }
-
-                    return null;
-                }
-            };
-
-            BeanUtilsBean beanUtilsBean = new BeanUtilsBean(new ConvertUtilsBean() {
-                @Override
-                public Object convert(String value, Class clazz) {
-                    if (clazz.isEnum()){
-                        return Enum.valueOf(clazz, value);
-                    } else{
-                        return super.convert(value, clazz);
-                    }
-                }
-            });
-
-
-            BeanUtilsBean.setInstance(new BeanUtilsBean(new EnumAwareConvertUtilsBean()));
-            ConvertUtils.register(dtConverter, LocalDate.class);
-            ConvertUtils.register(dtConverter, LocalDateTime.class);
             BeanUtils.copyProperties(old, updatedFields);
             getRepository().save(old);
         } catch (IllegalAccessException e) {
@@ -177,7 +116,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     }
 
     /**
-     * @see Service#delete(Long)
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
@@ -186,7 +125,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     }
 
     /**
-     * @see Service#delete(java.lang.Long)
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
@@ -195,19 +134,19 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     }
 
     /**
-     * @see Service#deleteMany(java.lang.Iterable)
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public void deleteMany(Iterable<Long> ids) {
         for (Long id : ids) {
-        	// TODO efficient implementation
+            // TODO efficient implementation
             getRepository().delete(id);
         }
     }
 
     /**
-     * @see Service#findById(java.lang.Long)
+     * {@inheritDoc}
      */
     @Override
     public T findById(Long id) {
@@ -215,8 +154,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     }
 
     /**
-     * @see Service#findById(java.lang.Long,
-     *      java.util.List)
+     * {@inheritDoc}
      */
     @Override
     public T findById(Long id, List<String> fetchFields) {
@@ -224,7 +162,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     }
 
     /**
-     * @see Service#getEnumConstants(String)
+     * {@inheritDoc}
      */
     @Override
     public List<Object> getEnumConstants(String fieldName) {
@@ -240,7 +178,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     }
 
     /**
-     * @see Service#list()
+     * {@inheritDoc}
      */
     @Override
     public List<T> list() {
@@ -248,7 +186,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     }
 
     /**
-     * @see Service#count()
+     * {@inheritDoc}
      */
     @Override
     public long count() {
@@ -256,7 +194,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     }
 
     /**
-     * @see Service#list(SearchConfig)
+     * {@inheritDoc}
      */
     @Override
     public List<T> list(final SearchConfig config) {
@@ -267,7 +205,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     }
 
     /**
-     * @see Service#count(SearchConfig)
+     * {@inheritDoc}
      */
     @Override
     public long count(SearchConfig config) {
@@ -278,7 +216,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
     /**
      * Creates a Predicate from list of BooleanExpression predicates which
      * represents all search filters.
-     * 
+     *
      * @param config
      *            PaginationConfiguration data holding object
      * @return query to filter entities according pagination configuration data.
@@ -291,7 +229,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
 
         Map<String, Object> filters = config.getFilters();
         if (filters != null) {
-        	// first we process nonstandard filters
+            // first we process nonstandard filters
             List<String> filtersToRemove = new ArrayList<>();
             predicate = processNonStandardFilters(filters, filtersToRemove, entityPath);
             removeUsedFilters(filtersToRemove, filters);
@@ -382,11 +320,11 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
      * This method groups some filters to one. This might be needed when several filters are dependent on each other,
      * for example when we have several text fields and we want all of them to participate in search and we need OR
      * functionality between them. Do not forget to remove filters so getPredicate() method would not try to process them again.
-     * 
+     *
      * @return processed filters keys.
      */
     protected BooleanExpression processNonStandardFilters(Map<String, Object> filters, List<String> filtersToRemove,
-            @SuppressWarnings("rawtypes") PathBuilder pathBuilder) {
+                                                          @SuppressWarnings("rawtypes") PathBuilder pathBuilder) {
         return null;
     }
 
@@ -423,19 +361,20 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
         if (BigDecimal.class.isAssignableFrom(clazz)) {
             return new BigDecimal(filter);
         } else if (Long.class.isAssignableFrom(clazz)) {
-            return new BigDecimal(filter);
+            return Long.valueOf(filter);
         } else if (Integer.class.isAssignableFrom(clazz)) {
-            return new BigDecimal(filter);
+            return Integer.valueOf(filter);
         } else if (Double.class.isAssignableFrom(clazz)) {
-            return new BigDecimal(filter);
+            return Double.valueOf(filter);
         } else if (Float.class.isAssignableFrom(clazz)) {
-            return new BigDecimal(filter);
+            return Float.valueOf(filter);
         } else if (Byte.class.isAssignableFrom(clazz)) {
-            return new BigDecimal(filter);
+            return Byte.valueOf(filter);
         } else if (Short.class.isAssignableFrom(clazz)) {
-            return new BigDecimal(filter);
+            return Short.valueOf(filter);
         } else {
             throw new IllegalStateException("Unknown number type in search filter. Supported type: BigDecimal, Long, Integer, Double, Float, Byte, Short");
         }
     }
+
 }

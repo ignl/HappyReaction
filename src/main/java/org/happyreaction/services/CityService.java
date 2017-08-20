@@ -23,7 +23,7 @@ public class CityService extends BaseService<City> implements Service<City> {
     private CityRepository repository;
     
     /**
-     * @see org.happyreaction.services.base.BaseService#getRepository()
+     * {@inheritDoc}
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override

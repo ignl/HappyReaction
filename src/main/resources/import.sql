@@ -43,4 +43,4 @@ insert into CUSTOMER (ID, VERSION, CUSTOMER_NAME, ADDRESS, EMAIL, PHONE, CITY_ID
 insert into CUSTOMER (ID, VERSION, CUSTOMER_NAME, ADDRESS, EMAIL, PHONE, CITY_ID, AGE) values (18, 1, 'Michael Williams16', 'Victoria st 11', 'michael@yahoo.com', '112345456', 2, 41);
 
 
-ALTER SEQUENCE hibernate_sequence RESTART WITH 999;
+ALTER SEQUENCE hibernate_sequence RESTART WITH 99999;

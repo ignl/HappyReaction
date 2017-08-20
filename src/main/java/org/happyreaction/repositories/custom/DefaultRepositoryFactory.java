@@ -32,8 +32,7 @@ public class DefaultRepositoryFactory extends JpaRepositoryFactory {
 	}
 
 	/**
-	 * @see org.springframework.data.jpa.repository.support.JpaRepositoryFactory#getTargetRepository(org.springframework.data.repository.core.RepositoryMetadata,
-	 *      javax.persistence.EntityManager)
+	 * {@inheritDoc}
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -44,7 +43,7 @@ public class DefaultRepositoryFactory extends JpaRepositoryFactory {
 	}
 
 	/**
-	 * @see org.springframework.data.jpa.repository.support.JpaRepositoryFactory#getRepositoryBaseClass(org.springframework.data.repository.core.RepositoryMetadata)
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
