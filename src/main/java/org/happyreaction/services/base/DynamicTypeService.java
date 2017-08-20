@@ -21,12 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional(readOnly = true)
 @Service("dynamicTypeService")
-public class DynamicTypeService implements IDynamicTypeService, Serializable {
+public class DynamicTypeService implements Serializable {
     
-    /**
-     * Class version id for serialization. After a change to serialized field this number should be changed so it would
-     * be clear its different class version.
-     */
     private static final long serialVersionUID = 1L;
     
     /** JPA entity manager. */
@@ -34,7 +30,13 @@ public class DynamicTypeService implements IDynamicTypeService, Serializable {
     private EntityManager em;
 
     /**
-     * @see IDynamicTypeService#findById(java.lang.Class, java.lang.Long)
+     * Loads entity by its id.
+     *
+     * @param entityClass
+     *            Concrete Entity class.
+     * @param id
+     *            Entity ID
+     * @return Loaded Entity.
      */
     @SuppressWarnings("rawtypes")
     public BaseEntity findById(Class entityClass, Long id) {

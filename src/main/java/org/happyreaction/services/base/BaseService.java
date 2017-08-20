@@ -42,19 +42,14 @@ import java.util.*;
  * 
  */
 @Transactional(readOnly = true)
-public abstract class BaseService<T extends IEntity> implements IService<T>, Serializable {
+public abstract class BaseService<T extends IEntity> implements Service<T>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Logger log = Logger.getLogger(BaseService.class.getName());
 
     @Autowired
-    private IDynamicTypeService dynamicTypeService;
-
-    /**
-     * Class version id for serialization. After a change to serialized field
-     * this number should be changed so it would be clear its different class
-     * version.
-     */
-    private static final long serialVersionUID = 1L;
+    private DynamicTypeService dynamicTypeService;
 
     // CHECKSTYLE:OFF
     /** Entity class of service. */
@@ -92,7 +87,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     protected abstract JpaRepository<T, Long> getRepository();
 
     /**
-     * @see org.happyreaction.services.base.IService#add(IEntity)
+     * @see Service#add(IEntity)
      */
     @Override
     @Transactional(readOnly = false)
@@ -135,7 +130,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#update(Long, Map)
+     * @see Service#update(Long, Map)
      */
     @Override
     @Transactional(readOnly = false)
@@ -182,7 +177,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#delete(Long)
+     * @see Service#delete(Long)
      */
     @Override
     @Transactional(readOnly = false)
@@ -191,7 +186,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#delete(java.lang.Long)
+     * @see Service#delete(java.lang.Long)
      */
     @Override
     @Transactional(readOnly = false)
@@ -200,7 +195,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#deleteMany(java.lang.Iterable)
+     * @see Service#deleteMany(java.lang.Iterable)
      */
     @Override
     @Transactional(readOnly = false)
@@ -212,7 +207,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#findById(java.lang.Long)
+     * @see Service#findById(java.lang.Long)
      */
     @Override
     public T findById(Long id) {
@@ -220,7 +215,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#findById(java.lang.Long,
+     * @see Service#findById(java.lang.Long,
      *      java.util.List)
      */
     @Override
@@ -229,7 +224,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#getEnumConstants(String)
+     * @see Service#getEnumConstants(String)
      */
     @Override
     public List<Object> getEnumConstants(String fieldName) {
@@ -245,7 +240,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#list()
+     * @see Service#list()
      */
     @Override
     public List<T> list() {
@@ -253,7 +248,7 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#count()
+     * @see Service#count()
      */
     @Override
     public long count() {
@@ -261,18 +256,18 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#list(SearchConfig)
+     * @see Service#list(SearchConfig)
      */
     @Override
     public List<T> list(final SearchConfig config) {
         Predicate predicate = getPredicate(config);
         Pageable pageable = new PageRequest(config.getFirstRow() / config.getNumberOfRows(), config.getNumberOfRows(),
-                config.getSortField() != null ? new Sort(config.getOrdering(), config.getSortField()) : null);
+                config.getSortField() != null ? new Sort(config.getOrdering(), config.getSortField()) : new Sort(Sort.Direction.DESC, "id"));
         return ((GenericRepository<T, Long>) getRepository()).findAll(predicate, pageable, config.getFetchFields()).getContent();
     }
 
     /**
-     * @see org.happyreaction.services.base.IService#count(SearchConfig)
+     * @see Service#count(SearchConfig)
      */
     @Override
     public long count(SearchConfig config) {
@@ -305,8 +300,18 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
                     String fieldName = entry.getKey();
                     String filter = String.valueOf(entry.getValue());
                     Class fieldType = null;
+                    String parsedFieldName = fieldName;
+
                     try {
-                        Field field = entityClass.getDeclaredField(fieldName);
+                        if (fieldName.startsWith("fromRange-")) {
+                            parsedFieldName = fieldName.substring(10);
+                        } else if (fieldName.startsWith("toRange-")) {
+                            parsedFieldName = fieldName.substring(8);
+                        } else if (fieldName.startsWith("list-")) {
+                            parsedFieldName = fieldName.substring(5);
+                        }
+
+                        Field field = entityClass.getDeclaredField(parsedFieldName);
                         fieldType = field.getType();
                     } catch (NoSuchFieldException e) {
                         log.error("Field " + fieldName + " does not exists for an entity " + entityClass + ". Please check your react code if you really provide correct field name.");
@@ -314,36 +319,33 @@ public abstract class BaseService<T extends IEntity> implements IService<T>, Ser
                     if (filter != null && fieldType != null) {
 
                         // if ranged search (from - to fields)
-                        if (fieldName.contains("fromRange-")) {
-                            // CHECKSTYLE:OFF
-                            String parsedKey = fieldName.substring(10);
-                            // CHECKSTYLE:ON
+                        if (fieldName.startsWith("fromRange-")) {
                             if (Number.class.isAssignableFrom(fieldType)) {
-//                                NumberPath path = createNumberPath(entityPath, parsedKey, filter);
-//                                predicate = and(predicate, path.goe((Number) filter));
-                            } else if (Date.class.isAssignableFrom(fieldType)) {
-                                DatePath path = entityPath.getDate(parsedKey, Date.class);
-//                                predicate = and(predicate, path.goe((Date) filter));
+                                NumberPath path = entityPath.getNumber(parsedFieldName, fieldType);
+                                predicate = and(predicate, path.goe(getNumber(fieldType, filter)));
+                            } else if (LocalDate.class.isAssignableFrom(fieldType)) {
+                                DatePath path = entityPath.getDate(parsedFieldName, Date.class);
+                                predicate = and(predicate, path.goe(LocalDate.parse(filter, DateTimeFormatter.ISO_DATE_TIME)));
+                            } else if (LocalDateTime.class.isAssignableFrom(fieldType)) {
+                                DatePath path = entityPath.getDate(parsedFieldName, Date.class);
+                                predicate = and(predicate, path.goe(LocalDateTime.parse(filter, DateTimeFormatter.ISO_DATE_TIME)));
                             }
-                        } else if (fieldName.contains("toRange-")) {
-                            // CHECKSTYLE:OFF
-                            String parsedKey = fieldName.substring(8);
-                            // CHECKSTYLE:ON
+                        } else if (fieldName.startsWith("toRange-")) {
                             if (Number.class.isAssignableFrom(fieldType)) {
-//                                NumberPath path = createNumberPath(entityPath, parsedKey, filter);
-//                                predicate = and(predicate, path.loe((Number) filter));
-                            } else if (Date.class.isAssignableFrom(fieldType)) {
-                                DatePath path = entityPath.getDate(parsedKey, Date.class);
-//                                predicate = and(predicate, path.loe((Date) filter));
+                                NumberPath path = entityPath.getNumber(parsedFieldName, fieldType);
+                                predicate = and(predicate, path.loe(getNumber(fieldType, filter)));
+                            } else if (LocalDate.class.isAssignableFrom(fieldType)) {
+                                DatePath path = entityPath.getDate(parsedFieldName, Date.class);
+                                predicate = and(predicate, path.loe(LocalDate.parse(filter, DateTimeFormatter.ISO_DATE_TIME)));
+                            } else if (LocalDateTime.class.isAssignableFrom(fieldType)) {
+                                DatePath path = entityPath.getDate(parsedFieldName, Date.class);
+                                predicate = and(predicate, path.loe(LocalDateTime.parse(filter, DateTimeFormatter.ISO_DATE_TIME)));
                             }
-                        } else if (fieldName.contains("list-")) {
-                            // CHECKSTYLE:OFF
-                            // if searching elements from list
-                            String parsedKey = fieldName.substring(5);
-                            // CHECKSTYLE:ON
-                            ListPath path = entityPath.getList(parsedKey, filter.getClass());
+                        } else if (fieldName.startsWith("list-")) {
+                            ListPath path = entityPath.getList(parsedFieldName, filter.getClass());
                             predicate = and(predicate, path.contains(filter));
                         } else { // if not ranged search
+
                             if (String.class == fieldType) {
                                 StringPath path = entityPath.getString(fieldName);
                                 String filterString = (String) filter;

@@ -12,25 +12,25 @@ class App extends React.Component {
 
     render() {
 
-        const labelsAndFields = [
+        const searchFields = [
             {label: "Name", field: "name", type: "String"},
             {label: "Address", field: "address", type: "String"},
             {label: "Email", field: "email", type: "String"},
-            {label: "Age", field: "age", type: "Integer"},
+            {label: "Age", field: "age", type: "Integer", isRangedSearch: true},
             {label: "Phone", field: "phone", type: "String"},
-            {label: "Date", field: "testDate", type: "Date"},
-            {label: "Date time", field: "testDateTime", type: "DateTime"},
-            {label: "Test number", field: "testBigDecimal", type: "Number"},
+            {label: "Date", field: "testDate", type: "Date", isRangedSearch: true},
+            {label: "Date time", field: "testDateTime", type: "DateTime", isRangedSearch: true},
+            {label: "Test number", field: "testBigDecimal", type: "Number", isRangedSearch: true},
             {label: "City", field: "city", type: "Object", entityToLoad: "city", entityProperty:"name"},
             {label: "Test enum", field: "testEnum", type: "Enum"},
             {label: "Test boolean", field: "testBoolean", type: "Boolean"}];
 
         const EditForm = ({ match }) => {
-            return <HappyForm entityId={match.params.id} labelsAndFields={labelsAndFields} />
+            return <HappyForm entityId={match.params.id} editFields={searchFields} />
         };
 
         const NewForm = ({ match }) => {
-            return <HappyForm labelsAndFields={labelsAndFields} />
+            return <HappyForm labelsAndFields={searchFields} />
         };
 
         return (
@@ -47,7 +47,7 @@ class App extends React.Component {
 
                     <Switch>
                         <Route exact path='/' component={Home}/>
-                        <Route path='/list' component={() => <SearchForm labelsAndFields={labelsAndFields} />}/>
+                        <Route path='/list' component={() => <SearchForm searchFields={searchFields} columnFields={searchFields} />}/>
                         <Route path="/edit/:id" component={EditForm}/>
                         <Route path="/new" component={NewForm}/>
                     </Switch>

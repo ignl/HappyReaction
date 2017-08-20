@@ -36,10 +36,6 @@ import com.querydsl.jpa.JPQLQuery;
 public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJpaRepository<T, ID> implements
         GenericRepository<T, ID>, Serializable {
 
-    /**
-     * Class version id for serialization. After a change to serialized field this number should be changed so it would
-     * be clear its different class version.
-     */
     private static final long serialVersionUID = 1L;
 
     /** */

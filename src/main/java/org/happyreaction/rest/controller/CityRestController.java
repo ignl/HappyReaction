@@ -1,11 +1,9 @@
 package org.happyreaction.rest.controller;
 
 import org.happyreaction.model.City;
-import org.happyreaction.model.Operation;
 import org.happyreaction.rest.controller.base.CrudController;
-import org.happyreaction.services.ICityService;
-import org.happyreaction.services.IOperationService;
-import org.happyreaction.services.base.IService;
+import org.happyreaction.services.CityService;
+import org.happyreaction.services.base.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,13 +20,13 @@ public class CityRestController extends CrudController<City> {
 
     /** Injected service. */
     @Autowired
-    private ICityService cityService;
+    private CityService cityService;
 
 	/**
 	 * @see CrudController#getService()
 	 */
 	@Override
-	public IService<City> getService() {
+	public Service<City> getService() {
 		return cityService;
 	}
 

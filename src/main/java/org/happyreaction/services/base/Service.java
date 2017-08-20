@@ -14,10 +14,10 @@ import org.happyreaction.model.helper.SearchConfig;
  *
  * @param <T> Type of Service.
  */
-public interface IService<T extends IEntity> {
+public interface Service<T extends IEntity> {
 
     /**
-     * Add entity.
+     * Add new entity.
      *
      * @param entity
      *            to add

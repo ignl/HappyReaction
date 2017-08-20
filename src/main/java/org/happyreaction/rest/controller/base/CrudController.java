@@ -1,21 +1,17 @@
 package org.happyreaction.rest.controller.base;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.happyreaction.model.base.IEntity;
 import org.happyreaction.model.helper.SearchConfig;
 import org.happyreaction.model.helper.SearchConfigEditor;
-import org.happyreaction.services.base.IService;
+import org.happyreaction.services.base.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.print.attribute.standard.Media;
 
 /**
  * Abstract base class for CRUD operations. Supports listing entities with pagination,
@@ -117,6 +113,6 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	/**
 	 * @return Concrete implementation of service which is injected in super class.
 	 */
-	public abstract IService<T> getService();
+	public abstract Service<T> getService();
 	
 }

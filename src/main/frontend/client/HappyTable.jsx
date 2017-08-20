@@ -8,6 +8,35 @@ class TableItem extends React.Component {
         this.handleDelete = this.handleDelete.bind(this);
     }
 
+    render() {
+
+        const component = this;
+        const columns = this.props.columnFields.map(function(fieldObj, index) {
+            const fieldName = fieldObj.field;
+            if (fieldObj.type == 'Object') {
+                return (<Table.Cell>{component.props.item[fieldName][fieldObj.entityProperty]}</Table.Cell>);
+            } else if (fieldObj.type == "Boolean") {
+                if (component.props.item[fieldName]) {
+                    return (<Table.Cell>Yes</Table.Cell>);
+                } else {
+                    return (<Table.Cell>No</Table.Cell>);
+                }
+            } else {
+                return (<Table.Cell>{component.props.item[fieldName]}</Table.Cell>);
+            }
+        });
+
+        return(
+            <Table.Row>
+                {columns}
+                <Table.Cell textAlign="right">
+                    <button><Link to={{ pathname: '/edit/' + this.props.item.id }}><Icon name='edit' size='large' /></Link></button>
+                    <button onClick={e => this.handleDelete(e)}><Icon color="red" name='delete' size='large' /></button>
+                </Table.Cell>
+            </Table.Row>
+        )
+    }
+
     handleDelete(e) {
         const component = this;
         const entityName = 'customer';
@@ -22,22 +51,6 @@ class TableItem extends React.Component {
                 alert("Not deleted!");
             }
         });
-    }
-
-    render() {
-        const columns = this.props.columns.map((columnProp, index) =>
-            <Table.Cell>{this.props.item[columnProp]}</Table.Cell>
-        );
-
-        return(
-            <Table.Row>
-                {columns}
-                <Table.Cell textAlign="right">
-                    <button><Link to={{ pathname: '/edit/' + this.props.item.id }}><Icon name='edit' size='large' /></Link></button>
-                    <button onClick={e => this.handleDelete(e)}><Icon color="red" name='delete' size='large' /></button>
-                </Table.Cell>
-            </Table.Row>
-        )
     }
 };
 
@@ -93,15 +106,15 @@ class HappyTable extends React.Component {
     }
 
     render() {
-        const columnLabels = this.props.columnLabels.map((columnName, index) =>
-            <Table.HeaderCell sorted = {this.state.column === columnName ? this.state.direction === 'ASC' ? 'ascending' : 'descending' : null} onClick = {()=>this.handleSort(columnName)}>
-                {columnName}
+        const columnLabels = this.props.columnFields.map((fieldObj, index) =>
+            <Table.HeaderCell sorted = {this.state.column === fieldObj.field ? this.state.direction === 'ASC' ? 'ascending' : 'descending' : null} onClick = {()=>this.handleSort(fieldObj.field)}>
+                {fieldObj.label}
             </Table.HeaderCell>
         );
         
         if (this.props.data) {
             const listItems = this.props.data.map((item, index) =>
-                <TableItem item={item} columns={this.props.columns} rerenderPageFunction={this.rerenderPage} />
+                <TableItem item={item} columnFields={this.props.columnFields} rerenderPageFunction={this.rerenderPage} />
             );
 
             const lastPage = Math.ceil(this.props.totalEntries / this.props.rowsPerPage);
@@ -109,7 +122,7 @@ class HappyTable extends React.Component {
             for (let i = Math.max(1, this.props.currentPage-1); i <= Math.min(lastPage, this.props.currentPage+1); i++) {
                 paginationLinks.push(<Menu.Item active={this.props.currentPage == i} onClick={this.handleItemClick}>{i}</Menu.Item>);
             }
-            const nbColumns = this.props.columns.length+1;
+            const nbColumns = this.props.columnFields.length+1;
 
             return (
                 <div>

@@ -2,8 +2,8 @@ package org.happyreaction.rest.controller;
 
 import org.happyreaction.model.Customer;
 import org.happyreaction.rest.controller.base.CrudController;
-import org.happyreaction.services.ICustomerService;
-import org.happyreaction.services.base.IService;
+import org.happyreaction.services.CustomerService;
+import org.happyreaction.services.base.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,13 +20,13 @@ public class CustomerRestController extends CrudController<Customer> {
 
     /** Injected service. */
     @Autowired
-    private ICustomerService customerService;
+    private CustomerService customerService;
 
 	/**
 	 * @see org.happyreaction.rest.controller.base.CrudController#getService()
 	 */
 	@Override
-	public IService<Customer> getService() {
+	public Service<Customer> getService() {
 		return customerService;
 	}
 

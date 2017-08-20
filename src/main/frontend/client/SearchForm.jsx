@@ -22,8 +22,10 @@ class SearchForm extends React.Component {
     }
 
     handleChange(event, data) {
-        var { name, value } = data;
-        this.setState({searchParams: {[name]: value}});
+        const loadedSearchParams =  this.state.searchParams;
+        const { name, value } = data;
+        loadedSearchParams[name] = value;
+        this.setState({searchParams: loadedSearchParams});
     }
 
     showPage(page, sortBy, direction) {
@@ -79,64 +81,103 @@ class SearchForm extends React.Component {
 
         var formFields = [];
         var group = [];
-        props.labelsAndFields.forEach(function(labelAndField, index) {
+        props.searchFields.forEach(function(fieldObj, index) {
             if (index % 3 === 0 && index !== 0) {
                 formFields.push(<Form.Group widths='equal'> {group} </Form.Group>);
                 group = [];
             }
-            const fieldName = labelAndField.field;
+            const fieldName = fieldObj.field;
             const booleanOptions = [{value: true, text: 'Yes'}, {value: false, text: 'No'}];
+            const loadedSearchParams =  this.state.searchParams;
 
             const handleDate = function (date) {
-                component.setState({searchParams: {[fieldName]: date.utc()}});
+                loadedSearchParams[fieldName] = date.utc();
+                component.setState({searchParams: loadedSearchParams});
             };
 
-            if (labelAndField.type == "Integer") {
-                group.push(<Form.Field>
-                    <Label>{labelAndField.label}</Label>
-                    <Input type="number" name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
-                </Form.Field>);
-            } else if (labelAndField.type == "Number") {
-                group.push(<Form.Field>
-                    <Label>{labelAndField.label}</Label>
-                    <Input type="number" step="0.01" name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
-                </Form.Field>);
-            } else if (labelAndField.type == "Boolean") {
-                group.push(<Form.Field>
-                    <Label>{labelAndField.label}</Label>
-                    <Select name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} placeholder='Select' options={booleanOptions} />
-                </Form.Field>);
-            } else if (labelAndField.type == "Date") {
-                group.push(<Form.Field>
-                    <Label>{labelAndField.label}</Label>
-                    <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
-                </Form.Field>);
-            } else if (labelAndField.type == "DateTime") {
-                group.push(<Form.Field>
-                    <Label>{labelAndField.label}</Label>
-                    <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
-                </Form.Field>);
-            } else if (labelAndField.type == "Object") {
-                group.push(<Form.Field>
-                    <Label>{labelAndField.label}</Label>
-                    <EntitySelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} entityToLoad={labelAndField.entityToLoad} entityProperty={labelAndField.entityProperty} />
-                </Form.Field>);
-            } else if (labelAndField.type == "Enum") {
-                group.push(<Form.Field>
-                    <Label>{labelAndField.label}</Label>
-                    <EnumSelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
-                </Form.Field>);
+            if (fieldObj.isRangedSearch) {
+                if (fieldObj.type == "Integer") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <Form.Group widths='2'>
+                            <Input placeholder="from" type="number" name={'fromRange-' + fieldName} value={this.state.searchParams['fromRange-' + fieldName]} onChange={this.handleChange} />
+                            <Input placeholder="to" type="number" name={'toRange-' + fieldName} value={this.state.searchParams['toRange-' + fieldName]} onChange={this.handleChange} />
+                        </Form.Group>
+                    </Form.Field>);
+                } else if (fieldObj.type == "Number") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <Form.Group widths='2'>
+                            <Input placeholder="from" type="number" step="0.01" name={'fromRange-' + fieldName} value={this.state.searchParams['fromRange-' + fieldName]} onChange={(event, data) => {loadedSearchParams['fromRange-' + data.name] = data.value; component.setState({searchParams: loadedSearchParams})}} />
+                            <Input placeholder="to" type="number" step="0.01" name={'toRange-' + fieldName} value={this.state.searchParams['toRange-' + fieldName]} onChange={(event, data) => {loadedSearchParams['toRange-' + data.name] = data.value; component.setState({searchParams: loadedSearchParams})}} />
+                        </Form.Group>
+                    </Form.Field>);
+                } else if (fieldObj.type == "Date") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <Form.Group widths='2'>
+                            <DatePicker placeholderText="from" selected={this.state.searchParams['fromRange-' + fieldName]} onChange={(date) => {loadedSearchParams['fromRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
+                            <DatePicker placeholderText="to" selected={this.state.searchParams['toRange-' + fieldName]} onChange={(date) => {loadedSearchParams['toRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
+                        </Form.Group>
+                    </Form.Field>);
+                } else if (fieldObj.type == "DateTime") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <Form.Group widths='2'>
+                            <DatePicker placeholderText="from" selected={this.state.searchParams['fromRange-' + fieldName]} onChange={(date) => {loadedSearchParams['fromRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
+                            <DatePicker placeholderText="to" selected={this.state.searchParams['toRange-' + fieldName]} onChange={(date) => {loadedSearchParams['toRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
+                        </Form.Group>
+                    </Form.Field>);
+                }
             } else {
-                group.push(<Form.Field>
-                    <Label>{labelAndField.label}</Label>
-                    <Input name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
-                </Form.Field>);
+                if (fieldObj.type == "Integer") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <Input type="number" name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
+                    </Form.Field>);
+                } else if (fieldObj.type == "Number") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <Input type="number" step="0.01" name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
+                    </Form.Field>);
+                } else if (fieldObj.type == "Boolean") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <Select name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} placeholder='Select' options={booleanOptions} />
+                    </Form.Field>);
+                } else if (fieldObj.type == "Date") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
+                    </Form.Field>);
+                } else if (fieldObj.type == "DateTime") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
+                    </Form.Field>);
+                } else if (fieldObj.type == "Object") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <EntitySelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} entityToLoad={fieldObj.entityToLoad} entityProperty={fieldObj.entityProperty} />
+                    </Form.Field>);
+                } else if (fieldObj.type == "Enum") {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <EnumSelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
+                    </Form.Field>);
+                } else {
+                    group.push(<Form.Field>
+                        <Label>{fieldObj.label}</Label>
+                        <Input name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
+                    </Form.Field>);
+                }
             }
+
         }.bind(this));
         formFields.push(<Form.Group widths='3'> {group} </Form.Group>);
 
-        const columnLabels = ["Name", "Address", "Email", "Phone"];
-        const columns = ["name", "address", "email", "phone"];
+        const columnLabels = ["Name", "Address", "Email", "Phone", "City", "Test enum", "Date", "Boolean", "Age", "Test number"];
+        const columns = ["name", "address", "email", "phone", "city.name", "testEnum", "date", "testBoolean", "age", "testNumber"];
 
 
         return(
@@ -147,7 +188,7 @@ class SearchForm extends React.Component {
                         <Button type='submit' primary>Search</Button>
                     </Form>
                 </Segment>
-                <HappyTable columnLabels={columnLabels} columns={columns} data={this.state.data} showPageFunction={this.showPage} totalEntries={this.state.totalEntries} rowsPerPage={this.rowsPerPage} currentPage={this.state.page} />
+                <HappyTable columnFields={this.props.columnFields} data={this.state.data} showPageFunction={this.showPage} totalEntries={this.state.totalEntries} rowsPerPage={this.rowsPerPage} currentPage={this.state.page} />
             </div>
         )
     }

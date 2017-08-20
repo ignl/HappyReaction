@@ -40,7 +40,7 @@ http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
 	</bean>
 
 	<!-- Enable the configuration of transactional behavior based on annotations -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
 
 	<!-- Transaction Manager is defined -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">

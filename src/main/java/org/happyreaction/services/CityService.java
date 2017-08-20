@@ -3,9 +3,9 @@ package org.happyreaction.services;
 import org.happyreaction.model.City;
 import org.happyreaction.repositories.CityRepository;
 import org.happyreaction.services.base.BaseService;
+import org.happyreaction.services.base.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
 
 /**
  * Service implementation for City.
@@ -13,10 +13,9 @@ import org.springframework.stereotype.Service;
  * @author Ignas
  *
  */
-@Service("cityService")
-public class CityService extends BaseService<City> implements ICityService {
+@org.springframework.stereotype.Service("cityService")
+public class CityService extends BaseService<City> implements Service<City> {
 
-    /** */
     private static final long serialVersionUID = 1L;
 
     /** Injected repository. */
