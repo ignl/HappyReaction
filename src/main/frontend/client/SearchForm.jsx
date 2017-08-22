@@ -21,10 +21,10 @@ class SearchForm extends React.Component {
         this.rowsPerPage = 5;
     }
 
-    getDefaultProps() {
+    static get defaultProps() {
         return {
             fetchFields: []
-        };
+        }
     }
 
     handleChange(event, data) {
@@ -89,11 +89,11 @@ class SearchForm extends React.Component {
         var group = [];
         props.searchFields.forEach(function(fieldObj, index) {
             if (index % 3 === 0 && index !== 0) {
-                formFields.push(<Form.Group widths='equal'> {group} </Form.Group>);
+                formFields.push(<Form.Group key={fieldObj.field} widths='equal'> {group} </Form.Group>);
                 group = [];
             }
             const fieldName = fieldObj.field;
-            const booleanOptions = [{value: true, text: 'Yes'}, {value: false, text: 'No'}];
+            const booleanOptions = [{value: "true", text: 'Yes'}, {value: "false", text: 'No'}];
             const loadedSearchParams =  this.state.searchParams;
 
             const handleDate = function (date) {
@@ -103,7 +103,7 @@ class SearchForm extends React.Component {
 
             if (fieldObj.isRangedSearch) {
                 if (fieldObj.type == "Integer") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <Form.Group widths='2'>
                             <Input placeholder="from" type="number" name={'fromRange-' + fieldName} value={this.state.searchParams['fromRange-' + fieldName]} onChange={this.handleChange} />
@@ -111,7 +111,7 @@ class SearchForm extends React.Component {
                         </Form.Group>
                     </Form.Field>);
                 } else if (fieldObj.type == "Number") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <Form.Group widths='2'>
                             <Input placeholder="from" type="number" step="0.01" name={'fromRange-' + fieldName} value={this.state.searchParams['fromRange-' + fieldName]} onChange={(event, data) => {loadedSearchParams['fromRange-' + data.name] = data.value; component.setState({searchParams: loadedSearchParams})}} />
@@ -119,7 +119,7 @@ class SearchForm extends React.Component {
                         </Form.Group>
                     </Form.Field>);
                 } else if (fieldObj.type == "Date") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <Form.Group widths='2'>
                             <DatePicker placeholderText="from" selected={this.state.searchParams['fromRange-' + fieldName]} onChange={(date) => {loadedSearchParams['fromRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
@@ -127,7 +127,7 @@ class SearchForm extends React.Component {
                         </Form.Group>
                     </Form.Field>);
                 } else if (fieldObj.type == "DateTime") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <Form.Group widths='2'>
                             <DatePicker placeholderText="from" selected={this.state.searchParams['fromRange-' + fieldName]} onChange={(date) => {loadedSearchParams['fromRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
@@ -137,42 +137,42 @@ class SearchForm extends React.Component {
                 }
             } else {
                 if (fieldObj.type == "Integer") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field} >
                         <Label>{fieldObj.label}</Label>
                         <Input type="number" name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
                     </Form.Field>);
                 } else if (fieldObj.type == "Number") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <Input type="number" step="0.01" name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
                     </Form.Field>);
                 } else if (fieldObj.type == "Boolean") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <Select name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} placeholder='Select' options={booleanOptions} />
                     </Form.Field>);
                 } else if (fieldObj.type == "Date") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
                     </Form.Field>);
                 } else if (fieldObj.type == "DateTime") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
                     </Form.Field>);
                 } else if (fieldObj.type == "Object") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <EntitySelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} entityToLoad={fieldObj.entityToLoad} entityProperty={fieldObj.entityProperty} />
                     </Form.Field>);
                 } else if (fieldObj.type == "Enum") {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <EnumSelect name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} entityName={this.props.entityName} />
                     </Form.Field>);
                 } else {
-                    group.push(<Form.Field>
+                    group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <Input name={fieldName} value={this.state.searchParams[fieldName]} onChange={this.handleChange} />
                     </Form.Field>);
@@ -180,7 +180,7 @@ class SearchForm extends React.Component {
             }
 
         }.bind(this));
-        formFields.push(<Form.Group widths='3'> {group} </Form.Group>);
+        formFields.push(<Form.Group key="last" widths='3'> {group} </Form.Group>);
 
         return(
             <div>

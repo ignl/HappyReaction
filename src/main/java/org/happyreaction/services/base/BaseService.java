@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -254,7 +255,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
                     } catch (NoSuchFieldException e) {
                         log.error("Field " + fieldName + " does not exists for an entity " + entityClass + ". Please check your react code if you really provide correct field name.");
                     }
-                    if (filter != null && fieldType != null) {
+                    if (!StringUtils.isEmpty(filter) && fieldType != null) {
 
                         // if ranged search (from - to fields)
                         if (fieldName.startsWith("fromRange-")) {

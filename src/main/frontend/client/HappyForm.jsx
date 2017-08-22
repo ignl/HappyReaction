@@ -19,16 +19,22 @@ class HappyForm extends React.Component {
         this.state = {entity: undefined, editedProperties: {}}
     }
 
+    static get defaultProps() {
+        return {
+            fetchFields: []
+        }
+    }
+
     componentDidMount() {
         const component = this;
         if (this.props.entityId) {
-            const entityName = this.props.entityName;
-            const url = "/rest/".concat(entityName).concat("/findById/").concat(this.props.entityId);
-            for (var i = 0; i < this.props.fetchFields.length; i++) {
+            const entityName = component.props.entityName;
+            var url = "/rest/".concat(entityName).concat("/findById/").concat(component.props.entityId);
+            for (var i = 0; i < component.props.fetchFields.length; i++) {
                 if (i == 0) {
-                    url.concat("?fetchFields=").concat(this.props.fetchFields[i]);
+                    url = url.concat("?fetchFields=").concat(component.props.fetchFields[i]);
                 } else {
-                    url.concat("&fetchFields=").concat(this.props.fetchFields[i]);
+                    url = url.concat("&fetchFields=").concat(component.props.fetchFields[i]);
                 }
             }
             fetch(url).then(function(response) {
@@ -115,21 +121,21 @@ class HappyForm extends React.Component {
             if (state.entity) {
                 if (fieldObj.type == "Integer") {
                     return (
-                        <Form.Field>
+                        <Form.Field key={fieldObj.field}>
                             <Label>{fieldObj.label}</Label>
                             <Input type="number" name={fieldObj.field} defaultValue={state.entity[fieldObj.field]} onChange={component.handleInputChange}/>
                         </Form.Field>
                     )
                 } if (fieldObj.type == "Number") {
                     return (
-                        <Form.Field>
+                        <Form.Field key={fieldObj.field}>
                             <Label>{fieldObj.label}</Label>
                             <Input type="number" step="0.01" name={fieldObj.field} defaultValue={state.entity[fieldObj.field]} onChange={component.handleInputChange}/>
                         </Form.Field>
                     )
                 } else if (fieldObj.type == "Boolean") {
                     return (
-                        <Form.Field>
+                        <Form.Field key={fieldObj.field}>
                             <span>
                                 <Label>{fieldObj.label}</Label><br/>
                                 <Segment compact>
@@ -144,7 +150,7 @@ class HappyForm extends React.Component {
                         loadedDate = moment(state.entity[fieldObj.field]);
                     }
                     return (
-                        <Form.Field>
+                        <Form.Field key={fieldObj.field}>
                             <Label>{fieldObj.label}</Label>
                             <DatePicker selected={loadedDate} onChange={handleDate} utcOffset={moment().utcOffset()} />
                         </Form.Field>
@@ -155,7 +161,7 @@ class HappyForm extends React.Component {
                         loadedDate = moment(state.entity[fieldObj.field]);
                     }
                     return (
-                        <Form.Field>
+                        <Form.Field key={fieldObj.field}>
                             <Label>{fieldObj.label}</Label>
                             <DatePicker selected={loadedDate} onChange={handleDate} utcOffset={moment().utcOffset()} />
                         </Form.Field>
@@ -163,21 +169,21 @@ class HappyForm extends React.Component {
                 } else if (fieldObj.type == "Object") {
                     const objectId = state.entity[fieldObj.field] ? state.entity[fieldObj.field].id : undefined;
                     return (
-                        <Form.Field>
+                        <Form.Field key={fieldObj.field}>
                             <Label>{fieldObj.label}</Label>
                             <EntitySelect name={fieldObj.field} value={objectId} onChange={component.handleInputChange} entityToLoad={fieldObj.entityToLoad} entityProperty={fieldObj.entityProperty} />
                         </Form.Field>
                     )
                 } else if (fieldObj.type == "Enum") {
                     return (
-                        <Form.Field>
+                        <Form.Field key={fieldObj.field}>
                             <Label>{fieldObj.label}</Label>
-                            <EnumSelect name={fieldObj.field} onChange={component.handleInputChange} value={state.entity[fieldObj.field]} entityName={this.props.entityName} />
+                            <EnumSelect name={fieldObj.field} onChange={component.handleInputChange} value={state.entity[fieldObj.field]} entityName={props.entityName} />
                         </Form.Field>
                     )
                 } else {
                     return (
-                        <Form.Field>
+                        <Form.Field key={fieldObj.field}>
                             <Label>{fieldObj.label}</Label>
                             <Input name={fieldObj.field} defaultValue={state.entity[fieldObj.field]} onChange={component.handleInputChange} />
                         </Form.Field>

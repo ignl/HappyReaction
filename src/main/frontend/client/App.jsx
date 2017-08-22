@@ -29,7 +29,7 @@ class App extends React.Component {
 
         const operationsSearchFields = [
             {label: "Operation name", field: "operationName", type: "String"},
-            {label: "Ammount", field: "amount", type: "Number"},
+            {label: "Amount", field: "amount", type: "Number", isRangedSearch: true},
             {label: "Type", field: "operationType", type: "Enum"},
             {label: "Account", field: "account", type: "Object", entityToLoad: "account", entityProperty: "accountNumber"},
             {label: "Operation date", field: "operationDate", type: "DateTime", isRangedSearch: true},
@@ -37,22 +37,22 @@ class App extends React.Component {
         ];
 
         const CustomerEditForm = ({ match }) => {
-            return <HappyForm entityId={match.params.id} editFields={customersSearchFields} entityName="customer" />
+            return <HappyForm entityId={match.params.id} editFields={customersSearchFields} entityName="customer" fetchFields={["city"]} />
         };
         const CustomerNewForm = ({ match }) => {
-            return <HappyForm editFields={customersSearchFields} />
+            return <HappyForm editFields={customersSearchFields}  entityName="customer" />
         };
         const AccountEditForm = ({ match }) => {
-            return <HappyForm entityId={match.params.id} editFields={accountsSearchFields} entityName="account" />
+            return <HappyForm entityId={match.params.id} editFields={accountsSearchFields} entityName="account" fetchFields={["customer"]} />
         };
         const AccountNewForm = ({ match }) => {
-            return <HappyForm editFields={accountsSearchFields} />
+            return <HappyForm editFields={accountsSearchFields} entityName="account" />
         };
         const OperationEditForm = ({ match }) => {
-            return <HappyForm entityId={match.params.id} editFields={operationsSearchFields} entityName="operation" />
+            return <HappyForm entityId={match.params.id} editFields={operationsSearchFields} entityName="operation" fetchFields={["account"]} />
         };
         const OperationNewForm = ({ match }) => {
-            return <HappyForm editFields={operationsSearchFields} />
+            return <HappyForm editFields={operationsSearchFields} entityName="operation"  />
         };
 
         return (
