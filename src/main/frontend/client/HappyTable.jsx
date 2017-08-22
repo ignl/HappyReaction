@@ -14,15 +14,15 @@ class TableItem extends React.Component {
         const columns = this.props.columnFields.map(function(fieldObj, index) {
             const fieldName = fieldObj.field;
             if (fieldObj.type == 'Object') {
-                return (<Table.Cell>{component.props.item[fieldName][fieldObj.entityProperty]}</Table.Cell>);
+                return (<Table.Cell key={fieldName}>{component.props.item[fieldName][fieldObj.entityProperty]}</Table.Cell>);
             } else if (fieldObj.type == "Boolean") {
                 if (component.props.item[fieldName]) {
-                    return (<Table.Cell>Yes</Table.Cell>);
+                    return (<Table.Cell key={fieldName}>Yes</Table.Cell>);
                 } else {
-                    return (<Table.Cell>No</Table.Cell>);
+                    return (<Table.Cell key={fieldName}>No</Table.Cell>);
                 }
             } else {
-                return (<Table.Cell>{component.props.item[fieldName]}</Table.Cell>);
+                return (<Table.Cell key={fieldName}>{component.props.item[fieldName]}</Table.Cell>);
             }
         });
 
@@ -107,20 +107,20 @@ class HappyTable extends React.Component {
 
     render() {
         const columnLabels = this.props.columnFields.map((fieldObj, index) =>
-            <Table.HeaderCell sorted = {this.state.column === fieldObj.field ? this.state.direction === 'ASC' ? 'ascending' : 'descending' : null} onClick = {()=>this.handleSort(fieldObj.field)}>
+            <Table.HeaderCell key={fieldObj.field} sorted={this.state.column === fieldObj.field ? this.state.direction === 'ASC' ? 'ascending' : 'descending' : null} onClick = {()=>this.handleSort(fieldObj.field)}>
                 {fieldObj.label}
             </Table.HeaderCell>
         );
         
         if (this.props.data) {
             const listItems = this.props.data.map((item, index) =>
-                <TableItem item={item} columnFields={this.props.columnFields} rerenderPageFunction={this.rerenderPage} entityName={this.props.entityName} />
+                <TableItem item={item} key={item.id} columnFields={this.props.columnFields} rerenderPageFunction={this.rerenderPage} entityName={this.props.entityName} />
             );
 
             const lastPage = Math.ceil(this.props.totalEntries / this.props.rowsPerPage);
             var paginationLinks = [];
             for (let i = Math.max(1, this.props.currentPage-1); i <= Math.min(lastPage, this.props.currentPage+1); i++) {
-                paginationLinks.push(<Menu.Item active={this.props.currentPage == i} onClick={this.handleItemClick}>{i}</Menu.Item>);
+                paginationLinks.push(<Menu.Item key={i} active={this.props.currentPage == i} onClick={this.handleItemClick}>{i}</Menu.Item>);
             }
             const nbColumns = this.props.columnFields.length+1;
 
