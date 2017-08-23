@@ -98,8 +98,8 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	 * @return True if operation is successful.
 	 */
 	@RequestMapping(value = "/add", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST)
-	public ResponseEntity add(@RequestBody T entity) {
-		getService().add(entity);
+	public ResponseEntity add(@RequestBody Map<String, Object> newEntityValues) {
+		getService().add(newEntityValues);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 

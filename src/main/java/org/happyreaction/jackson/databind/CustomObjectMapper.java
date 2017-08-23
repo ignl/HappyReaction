@@ -11,7 +11,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class CustomObjectMapper extends ObjectMapper {
 
     /**
-     * Contructor with additional configuration needed for Java8 {@link java.time.LocalDate} and
+     * Constructor with additional configuration needed for Java8 {@link java.time.LocalDate} and
      * {@link java.time.LocalDateTime} to work with Jackson mapper.
      */
     public CustomObjectMapper() {

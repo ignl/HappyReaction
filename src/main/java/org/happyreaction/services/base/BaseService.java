@@ -92,6 +92,25 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
 
     /**
      * {@inheritDoc}
+     *
+     * Creates new entity and assigns all the values to it.
+     * If values need conversion (e.g. id to entity or string to date) it is handled by commons-beantutils.
+     *
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void add(Map<String, Object> newEntityValues) {
+        try {
+            T newEntity = (T)entityClass.getConstructor().newInstance();
+            BeanUtils.copyProperties(newEntity, newEntityValues);
+            add(newEntity);
+        } catch (Exception e) {
+            log.error("Error while creating new!", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
@@ -109,9 +128,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
         try {
             BeanUtils.copyProperties(old, updatedFields);
             getRepository().save(old);
-        } catch (IllegalAccessException e) {
-            log.error("Error while updating!", e);
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             log.error("Error while updating!", e);
         }
     }

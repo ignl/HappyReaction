@@ -25,6 +25,13 @@ public interface Service<T extends IEntity> {
     void add(T entity);
 
     /**
+     * Create and add new entity.
+     *
+     * @param newEntityValues values to use for the new entity
+     */
+    void add(Map<String, Object> newEntityValues);
+
+    /**
      * Update entity.
      *
      * @param id ID of the entity that is updated.

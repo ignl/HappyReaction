@@ -1,12 +1,11 @@
 package org.happyreaction.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import org.happyreaction.model.base.BaseEntity;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.happyreaction.model.base.BaseEntity;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * City domain model.
