@@ -37,7 +37,7 @@ public class EnumAndEntityConvertUtilsBean extends ConvertUtilsBean {
      */
     @PostConstruct
     public void registerConverters() {
-        BeanUtilsBean.setInstance(new BeanUtilsBean(new EnumAndEntityConvertUtilsBean()));
+        BeanUtilsBean.setInstance(new BeanUtilsBean(this));
         ConvertUtils.register(new DateTimeConverter(), LocalDate.class);
         ConvertUtils.register(new DateTimeConverter(), LocalDateTime.class);
     }
