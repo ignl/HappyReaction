@@ -97,7 +97,7 @@ class SearchForm extends React.Component {
             const loadedSearchParams =  this.state.searchParams;
 
             const handleDate = function (date) {
-                loadedSearchParams[fieldName] = date.utc();
+                loadedSearchParams[fieldName] = date ? date.utc() : undefined;
                 component.setState({searchParams: loadedSearchParams});
             };
 
@@ -122,16 +122,16 @@ class SearchForm extends React.Component {
                     group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <Form.Group widths='2'>
-                            <DatePicker placeholderText="from" selected={this.state.searchParams['fromRange-' + fieldName]} onChange={(date) => {loadedSearchParams['fromRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
-                            <DatePicker placeholderText="to" selected={this.state.searchParams['toRange-' + fieldName]} onChange={(date) => {loadedSearchParams['toRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
+                            <DatePicker placeholderText="from" selected={this.state.searchParams['fromRange-' + fieldName]} isClearable={true} onChange={(date) => {loadedSearchParams['fromRange-' + fieldName] =  date ? date.utc() : undefined; component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
+                            <DatePicker placeholderText="to" selected={this.state.searchParams['toRange-' + fieldName]} isClearable={true} onChange={(date) => {loadedSearchParams['toRange-' + fieldName] =  date ? date.utc() : undefined; component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
                         </Form.Group>
                     </Form.Field>);
                 } else if (fieldObj.type == "DateTime") {
                     group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
                         <Form.Group widths='2'>
-                            <DatePicker placeholderText="from" selected={this.state.searchParams['fromRange-' + fieldName]} onChange={(date) => {loadedSearchParams['fromRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
-                            <DatePicker placeholderText="to" selected={this.state.searchParams['toRange-' + fieldName]} onChange={(date) => {loadedSearchParams['toRange-' + fieldName] = date.utc(); component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
+                            <DatePicker placeholderText="from" selected={this.state.searchParams['fromRange-' + fieldName]} isClearable={true} onChange={(date) => {loadedSearchParams['fromRange-' + fieldName] =  date ? date.utc() : undefined; component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
+                            <DatePicker placeholderText="to" selected={this.state.searchParams['toRange-' + fieldName]} isClearable={true} onChange={(date) => {loadedSearchParams['toRange-' + fieldName] =  date ? date.utc() : undefined; component.setState({searchParams: loadedSearchParams})}} utcOffset={moment().utcOffset()} />
                         </Form.Group>
                     </Form.Field>);
                 }
@@ -154,12 +154,12 @@ class SearchForm extends React.Component {
                 } else if (fieldObj.type == "Date") {
                     group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
-                        <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
+                        <DatePicker selected={this.state.searchParams[fieldName]} isClearable={true} onChange={handleDate} utcOffset={moment().utcOffset()} />
                     </Form.Field>);
                 } else if (fieldObj.type == "DateTime") {
                     group.push(<Form.Field key={fieldObj.field}>
                         <Label>{fieldObj.label}</Label>
-                        <DatePicker selected={this.state.searchParams[fieldName]} onChange={handleDate} utcOffset={moment().utcOffset()} />
+                        <DatePicker selected={this.state.searchParams[fieldName]} isClearable={true} onChange={handleDate} utcOffset={moment().utcOffset()} />
                     </Form.Field>);
                 } else if (fieldObj.type == "Object") {
                     group.push(<Form.Field key={fieldObj.field}>
