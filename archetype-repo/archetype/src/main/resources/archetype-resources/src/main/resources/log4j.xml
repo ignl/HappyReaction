@@ -1,0 +1,28 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<log4j:configuration>
+    <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{MM/dd HH:mm:ss} %-5p %30.30c %x - %m${symbol_escape}n"/>
+        </layout>
+    </appender>
+    <appender name="FileAppender" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${symbol_dollar}{catalina.base}/logs/my.log"/>
+        <param name="MaxFileSize" value="10MB"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{MM/dd HH:mm:ss} %-5p %30.30c %x - %m${symbol_escape}n"/>
+        </layout>
+    </appender>
+    <logger name="com.digitalsanctum.builder.web" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="ConsoleAppender"/>
+    </logger>
+    <root>
+        <level value="info"/>
+        <appender-ref ref="ConsoleAppender"/>
+        <appender-ref ref="FileAppender"/>
+    </root>
+</log4j:configuration>
