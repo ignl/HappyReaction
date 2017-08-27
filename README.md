@@ -95,3 +95,13 @@ const CustomerNewForm = ({ match }) => {
 
 After you do that and deploy your app you will be able to create a new Customer in GUI, edit it, delete it, and search for it by its name right away. You don't need to write any logic for that as it is all handled by BaseService and SearchForm and HappyForm react components. Hopefully in the future all those steps will be automated.
 
+## Supported field types
+In the previous example (```{label: "Name", field: "name", type: "String"}```) it was a string type customer name field. But HappyReaction supports and other field types.
+* String
+* Date
+* DateTime
+* Number
+* Integer
+* Object (other Entities)
+* Enum
+* Boolean
