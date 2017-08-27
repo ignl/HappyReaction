@@ -7,7 +7,7 @@
       <groupId>org.happyreaction</groupId>
       <artifactId>HappyReaction-archetype</artifactId>
       <version>1.0.0</version>
-      <repository>https://github.com/ignl/HappyReaction/edit/master/archetype-repo</repository>
+      <repository>https://github.com/ignl/HappyReaction/edit/master/archetype-repo/archetype</repository>
       <description>HappyReaction-archetype</description>
     </archetype>
   </archetypes>
