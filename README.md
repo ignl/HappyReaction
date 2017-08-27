@@ -12,12 +12,12 @@ cd your_new_project_dir
 mvn clean install
 ```
 ### Setup database
-Install postgresql
-Create database with name: happyreactiondb
-Setup user with username/password: postgres/admin
+Install postgresql<br/>
+Create database with name: happyreactiondb<br/>
+Setup user with username/password: postgres/admin<br/>
 ### Deploy
-Load project to your favorite IDE
-Deploy it on apache tomcat and start it up.
+Load project to your favorite IDE<br/>
+Deploy it on apache tomcat and start it up.<br/>
 ### Setup NPM watch
 Open command prompt, go to src/main/frontend and run 'npm run watch' if you want to have your javascript modifications reloaded (you might need to install npm on your machine separately)
 
@@ -33,8 +33,6 @@ To add a new entity all you have to do is the following:
 ```java
 @Entity
 @Table(name = "CUSTOMER")
-@Getter
-@Setter
 public class Customer extends BaseEntity {
     @Column(name = "CUSTOMER_NAME", nullable = false)
     private String name;
@@ -68,15 +66,15 @@ public class CustomerRestController extends CrudController<Customer> {
     @Autowired
     private CustomerService customerService;
 
-	  @Override
-	  public Service<Customer> getService() {
-		  return customerService;
-	  }
+    @Override
+    public Service<Customer> getService() {
+      return customerService;
+    }
 }
 ```
 * And at last create a page in React UI
 ```jsx
-// fields to show for seacrh and edit forms in this case (because we reuse this set in CustomerEditForm and CustomerNewForm).
+// fields to show for search (and edit forms in this case).
 const customersSearchFields = [
   {label: "Name", field: "name", type: "String"}
 ];
@@ -85,7 +83,7 @@ const CustomerEditForm = ({ match }) => {
     return <HappyForm entityId={match.params.id} editFields={customersSearchFields} entityName="customer" />
 };
 const CustomerNewForm = ({ match }) => {
-    return <HappyForm editFields={customersSearchFields}  entityName="customer" />
+    return <HappyForm editFields={customersSearchFields} entityName="customer" />
 };
 // Final step is to add our SearchForm and HappyForm components to react router
 <Switch>
