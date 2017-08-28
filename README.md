@@ -4,7 +4,7 @@ Maven archetype to quickly create React-Java app with all CRUD and search functi
 ## Quick start
 ### Start project
 ```bash
-mvn archetype:generate -DarchetypeGroupId=org.happyreaction -DarchetypeArtifactId=HappyReaction-archetype -DarchetypeVersion=1.0.0 -DgroupId=com.test -DartifactId=TestProject -DarchetypeRepository=https://github.com/ignl/HappyReaction/tree/mvn-repo/archetype
+mvn archetype:generate -DarchetypeGroupId=org.happyreaction -DarchetypeArtifactId=HappyReaction-archetype -DarchetypeVersion=1.0.0 -DgroupId=com.test -DartifactId=TestProject -DarchetypeRepository=https://raw.github.com/ignl/HappyReaction/mvn-repo/
 ```
 ### Build project
 ```bash
