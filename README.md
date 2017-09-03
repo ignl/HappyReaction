@@ -11,6 +11,11 @@ mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate -DarchetypeGrou
 cd your_new_project_dir
 mvn clean install
 ```
+You might need to generate sources for QueryDsl dependendency, but it should work even without it:
+```
+mvn generate-sources
+```
+
 ### Setup database
 Install postgresql<br/>
 Create database with name: happyreactiondb<br/>
