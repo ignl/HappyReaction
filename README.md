@@ -15,6 +15,7 @@ You might need to generate sources for QueryDsl dependendency, but it should wor
 ```
 mvn generate-sources
 ```
+You also need to install <a href=https://projectlombok.org/>lombok</a> plugin for your IDE.
 
 ### Setup database
 Install postgresql<br/>
