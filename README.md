@@ -1,5 +1,6 @@
 # HappyReaction
 Maven archetype to quickly create React-Java app with all CRUD and search functionality out of box. It is based on Spring/Hibernate/QueryDsl stack on the backend and React/Semantic-UI on the front end. Adding a new entity with CRUD and search functionality will take only a few minutes and I hope to cut that down even more with code generation in the future.
+Quick intro blog post with pictures: https://intelligentjava.wordpress.com/2017/09/03/reactjavaspring-project-archetype/
 
 ## Quick start
 ### Start project
