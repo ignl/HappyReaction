@@ -1,16 +1,23 @@
 # HappyReaction
 Maven archetype to quickly create React-Java app with all CRUD and search functionality out of box. It is based on Spring/Hibernate/QueryDsl stack on the backend and React/Semantic-UI on the front end. Adding a new entity with CRUD and search functionality will take only a few minutes and I hope to cut that down even more with code generation in the future.
+Quick intro blog post with pictures: https://intelligentjava.wordpress.com/2017/09/03/reactjavaspring-project-archetype/
 
 ## Quick start
 ### Start project
 ```bash
-mvn archetype:generate -DarchetypeGroupId=org.happyreaction -DarchetypeArtifactId=HappyReaction-archetype -DarchetypeVersion=1.0.0 -DgroupId=com.test -DartifactId=TestProject -DarchetypeRepository=https://raw.github.com/ignl/HappyReaction/mvn-repo/
+mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate -DarchetypeGroupId=org.happyreaction -DarchetypeArtifactId=HappyReaction-archetype -DarchetypeVersion=1.0.0 -DarchetypeRepository=https://raw.github.com/ignl/HappyReaction/mvn-repo/ -DgroupId=com.test -DartifactId=TestProject
 ```
 ### Build project
 ```bash
 cd your_new_project_dir
 mvn clean install
 ```
+You might need to generate sources for QueryDsl dependendency, but it should work even without it:
+```
+mvn generate-sources
+```
+You also need to install <a href=https://projectlombok.org/>lombok</a> plugin for your IDE.
+
 ### Setup database
 Install postgresql<br/>
 Create database with name: happyreactiondb<br/>
@@ -105,3 +112,8 @@ In the previous example (```{label: "Name", field: "name", type: "String"}```) i
 * Object (other Entities)
 * Enum
 * Boolean
+
+The archetype contains a self explanatory mini application instead of documentation, but I will try to add more information on internal workings of this archetype.
+
+<h1> Help wanted </h1>
+I did not use this app in production yet (though it is partially based on happyfacescrud which was used in production). For that it lacks some features that could be very useful (which if you plan to use HappyReaction you will probably have to implement). For example user login, roles and security, hot code reloading, some better components etc. If you do any improvements - PRs are welcome and I will release new versions for others to take advantage of it too. Another idea I would welcome is code generation tool maybe based on freemarker or something similar. So if you find HappyReaction useful and would like to contribute I would really welcome it! Also if you find better ways to do things (architecture, structure, code, react patterns, etc) - let me know.
