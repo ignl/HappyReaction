@@ -167,7 +167,7 @@ class HappyForm extends React.Component {
                         </Form.Field>
                     )
                 } else if (fieldObj.type == "Object") {
-                    const objectId = state.editedProperties[fieldObj.field] ? state.editedProperties[fieldObj.field] : state.entity[fieldObj.field].id;
+                    const objectId = state.editedProperties[fieldObj.field] ? state.editedProperties[fieldObj.field] : state.entity[fieldObj.field] ? state.entity[fieldObj.field].id : undefined;
                     return (
                         <Form.Field key={fieldObj.field}>
                             <Label>{fieldObj.label}</Label>
