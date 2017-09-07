@@ -20,7 +20,6 @@ import javax.persistence.PersistenceContext;
 import java.beans.Introspector;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
