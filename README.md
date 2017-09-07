@@ -5,7 +5,7 @@ Quick intro blog post with pictures: https://intelligentjava.wordpress.com/2017/
 ## Quick start
 ### Start project
 ```bash
-mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate -DarchetypeGroupId=org.happyreaction -DarchetypeArtifactId=HappyReaction-archetype -DarchetypeVersion=1.0.0 -DarchetypeRepository=https://raw.github.com/ignl/HappyReaction/mvn-repo/ -DgroupId=com.test -DartifactId=TestProject
+mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate -DarchetypeGroupId=org.happyreaction -DarchetypeArtifactId=HappyReaction-archetype -DarchetypeVersion=1.0.1 -DarchetypeRepository=https://raw.github.com/ignl/HappyReaction/mvn-repo/ -DgroupId=com.test -DartifactId=TestProject
 ```
 ### Build project
 ```bash
