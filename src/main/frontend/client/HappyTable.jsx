@@ -2,7 +2,13 @@ import React from 'react'
 import { Button, Icon, Table, Loader, Menu, Divider } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
 
+const styles = {
+    cursor: "pointer"
+};
+
+
 class TableItem extends React.Component {
+
     constructor(props) {
         super(props);
         this.handleDelete = this.handleDelete.bind(this);
@@ -30,8 +36,8 @@ class TableItem extends React.Component {
             <Table.Row>
                 {columns}
                 <Table.Cell textAlign="right">
-                    <button><Link to={{ pathname: '/' + component.props.entityName + '/edit/' + this.props.item.id }}><Icon name='edit' size='large' /></Link></button>
-                    <button onClick={e => this.handleDelete(e)}><Icon color="red" name='delete' size='large' /></button>
+                    <Link style={styles} to={{ pathname: '/' + component.props.entityName + '/edit/' + this.props.item.id }}><Icon name='edit' size='large' /></Link>
+                    <a style={styles} onClick={e => this.handleDelete(e)}><Icon color="red" name='delete' size='large' /></a>
                 </Table.Cell>
             </Table.Row>
         )
