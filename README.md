@@ -2,6 +2,8 @@
 Maven archetype to quickly create React-Java app with all CRUD and search functionality out of box. It is based on Spring/Hibernate/QueryDsl stack on the backend and React/Semantic-UI on the front end. Adding a new entity with CRUD and search functionality will take only a few minutes and I hope to cut that down even more with code generation in the future.
 Quick intro blog post with pictures: https://intelligentjava.wordpress.com/2017/09/03/reactjavaspring-project-archetype/
 
+This archetype contains a self explanatory mini application instead of documentation.
+
 ## Quick start
 ### Start project
 ```bash
@@ -100,7 +102,7 @@ const CustomerNewForm = ({ match }) => {
 </Switch>
 ```
 
-After you do that and deploy your app you will be able to create a new Customer in GUI, edit it, delete it, and search for it by its name right away. You don't need to write any logic for that as it is all handled by BaseService and SearchForm and HappyForm react components. Hopefully in the future all those steps will be automated.
+After you do that and deploy your app you will be able to create a new Customer in GUI, edit it, delete it, and search for it by its name right away. You don't need to write any logic for that as it is all handled by BaseService and SearchForm/HappyForm react components. Hopefully in the future all those steps will be automated.
 
 ## Supported field types
 In the previous example (```{label: "Name", field: "name", type: "String"}```) it was a string type customer name field. But HappyReaction supports and other field types.
@@ -113,8 +115,6 @@ In the previous example (```{label: "Name", field: "name", type: "String"}```) i
 * Enum
 * Boolean
 
-The archetype contains a self explanatory mini application instead of documentation, but I will try to add more information on internal workings of this archetype.
-
 ## Project site
 For project site with javadocs, test coverage, pmd, findbugs etc run:
 ```
@@ -122,4 +122,4 @@ mvn site:run
 ```
 
 <h1> Help wanted </h1>
-I did not use this app in production yet (though it is partially based on happyfacescrud which was used in production). For that it lacks some features that could be very useful (which if you plan to use HappyReaction you will probably have to implement). For example user login, roles and security, hot code reloading, some better components etc. If you do any improvements - PRs are welcome and I will release new versions for others to take advantage of it too. Another idea I would welcome is code generation tool maybe based on freemarker or something similar. So if you find HappyReaction useful and would like to contribute I would really welcome it! Also if you find better ways to do things (architecture, structure, code, react patterns, etc) - let me know.
+I did not use this app in production yet (though it is partially based on happyfacescrud which was used in production). For that reason it lacks some features that could be very useful (which if you plan to use HappyReaction you will probably have to implement). For example user login, roles and security, hot code reloading, some better components etc. If you do any improvements - PRs are welcome and I will release new versions for others to take advantage of it too. Another idea I would welcome is code generation tool maybe based on freemarker or something similar so all the steps to create a new entity/page would be done with a single command. If you find HappyReaction useful and would like to contribute I would really welcome it! Also if you find better ways to do things (architecture, structure, code, react patterns, etc) - let me know.
