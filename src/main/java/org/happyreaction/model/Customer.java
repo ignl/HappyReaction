@@ -12,9 +12,6 @@ import java.util.List;
 
 /**
  * Customer domain model.
- * 
- * @author Ignas
- * 
  */
 @Entity
 @Table(name = "CUSTOMER")
@@ -28,35 +25,28 @@ public class Customer extends BaseEntity {
 
     private static final int MIN_PHONE_NUMBER_LENGTH = 7;
 
-    /** Customer name. */
     @Column(name = "CUSTOMER_NAME", nullable = false)
     private String name;
 
-    /** Customer's accounts. */
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Account> accounts;
 
-    /** Customer city. */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CITY_ID")
     private City city;
 
-    /** Customer address. */
     @Column(name = "ADDRESS")
     private String address;
 
-    /** Customer email. */
     @Email
     @Column(name = "EMAIL")
     private String email;
 
-    /** Customer phone number. */
     @Length(min = MIN_PHONE_NUMBER_LENGTH, max = MAX_PHONE_NUMBER_LENGTH)
     @Column(name = "PHONE")
     private String phone;
 
-    /** Customer age. */
     @Column(name = "AGE")
     private Integer age;
 

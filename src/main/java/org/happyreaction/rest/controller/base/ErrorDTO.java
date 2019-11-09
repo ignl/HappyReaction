@@ -10,23 +10,17 @@ import java.util.List;
 
 /**
  * DTO object for returning back error messages for REST WS.
- * 
- * @author Ignas
- *
  */
 @RequiredArgsConstructor
 @Getter
 @Setter
 public class ErrorDTO {
 
-    /** Description. */
     @NonNull
     private final String description;
 
-    /** Details. */
-    private List<String> details = new ArrayList<String>();
+    private List<String> details = new ArrayList<>();
 
-    /** Add single detail to details list. */
     public void addDetail(String detail) {
         this.details.add(detail);
     }

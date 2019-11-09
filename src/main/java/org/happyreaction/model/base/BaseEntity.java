@@ -19,9 +19,6 @@ import lombok.Setter;
  * Base entity class that can be extended for concrete domain models. It already
  * contains implementation of {@link IEntity} interface and Version field for
  * JPAs optimistic locking.
- * 
- * @author Ignas
- * 
  */
 @MappedSuperclass
 @Getter
@@ -50,7 +47,7 @@ public class BaseEntity implements IEntity, Serializable {
     private Long version;
 
     /**
-     * @return True if entity is not yet saved to the database.
+     * {@inheritDoc}
      */
     @Override
     public boolean isTransient() {

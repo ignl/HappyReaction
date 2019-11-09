@@ -6,7 +6,7 @@ import org.apache.commons.beanutils.Converter;
  *  Generic enum converter that uses {@see Enum$valueOf} method to convert string to enum value.
  *  This approach allow to not use a new converter for each type of enum.
  */
-public class EnumConverter implements Converter {
+class EnumConverter implements Converter {
 
     /**
      * {@inheritDoc}

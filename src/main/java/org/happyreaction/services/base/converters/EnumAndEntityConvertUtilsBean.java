@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  * EntityConverter takes entity ID as an input and loads the entity from the database.
  */
 @Component
-public class EnumAndEntityConvertUtilsBean extends ConvertUtilsBean {
+class EnumAndEntityConvertUtilsBean extends ConvertUtilsBean {
 
     /** Generic enum converter that works for any enum. */
     private final EnumConverter enumConverter = new EnumConverter();

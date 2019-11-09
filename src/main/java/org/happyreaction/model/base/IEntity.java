@@ -2,9 +2,6 @@ package org.happyreaction.model.base;
 
 /**
  * Interface for all JPA entities to implement.
- * 
- * @author Ignas
- *
  */
 public interface IEntity {
     
@@ -14,7 +11,7 @@ public interface IEntity {
     Long getId();
     
     /**
-     * Returns if entity is already saved in database.
+     * @return True if entity is not yet saved to the database.
      */
     boolean isTransient();
 

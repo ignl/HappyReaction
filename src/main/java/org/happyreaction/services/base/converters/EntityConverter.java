@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * Entity converter which receives integer and entity type and loads that entity from database.
  */
 @Component
-public class EntityConverter implements Converter {
+class EntityConverter implements Converter {
 
     /** Dynamic type service is able to load any type of entity by its ID. */
     @Autowired

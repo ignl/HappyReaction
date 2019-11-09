@@ -5,9 +5,6 @@ import org.happyreaction.repositories.custom.GenericRepository;
 
 /**
  * Spring Data repository interface for {@link City} entity. Implementation is created by spring.
- * 
- * @author Ignas
- * 
  */
 public interface CityRepository extends GenericRepository<City, Long> {
 

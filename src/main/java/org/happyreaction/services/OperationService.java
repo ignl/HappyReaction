@@ -9,25 +9,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Service implementation for Operation.
- * 
- * @author Ignas
- *
  */
 @org.springframework.stereotype.Service("operationService")
 public class OperationService extends BaseService<Operation> implements Service<Operation> {
 
     private static final long serialVersionUID = 1L;
 
-    /** Injected repository. */
     @Autowired
     private OperationRepository repository;
     
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected JpaRepository<Operation, Long> getRepository() {
-        return (JpaRepository) repository;
+        return repository;
     }
 }

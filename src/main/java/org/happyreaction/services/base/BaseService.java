@@ -32,8 +32,6 @@ import java.util.*;
 /**
  * Base service that other persistence services can extend. It provides all common crud and search operations out of box.
  *
- * @author Ignas
- *
  * @param <T>
  *            Type of an entity.
  *
@@ -57,7 +55,6 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
 
     /**
      * Default constructor. Loads entity class from super service information.
-     * It is used
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public BaseService() {
@@ -84,7 +81,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void add(T entity) {
         getRepository().save(entity);
     }
@@ -97,7 +94,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
      *
      */
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void add(Map<String, Object> newEntityValues) {
         try {
             T newEntity = (T)entityClass.getConstructor().newInstance();
@@ -112,7 +109,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void update(T entity) {
         getRepository().save(entity);
     }
@@ -121,7 +118,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void update(Long id, Map<String, Object> updatedFields) {
         T old = getRepository().findOne(id);
         try {
@@ -136,7 +133,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void delete(T entity) {
         getRepository().delete(entity);
     }
@@ -145,7 +142,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void delete(Long id) {
         getRepository().delete(id);
     }
@@ -154,7 +151,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void deleteMany(Iterable<Long> ids) {
         for (Long id : ids) {
             // TODO efficient implementation
@@ -303,8 +300,7 @@ public abstract class BaseService<T extends IEntity> implements Service<T>, Seri
 
                             if (String.class == fieldType) {
                                 StringPath path = entityPath.getString(fieldName);
-                                String filterString = (String) filter;
-                                predicate = and(predicate, path.startsWithIgnoreCase(filterString));
+                                predicate = and(predicate, path.startsWithIgnoreCase(filter));
                             } else if (LocalDate.class.isAssignableFrom(fieldType)) {
                                 DatePath path = entityPath.getDate(fieldName, Date.class);
                                 predicate = and(predicate, path.eq(LocalDate.parse(filter, DateTimeFormatter.ISO_DATE_TIME)));

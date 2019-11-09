@@ -10,8 +10,6 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 
 /**
  * This class is used when DefaultRepositoryFactory overrides default repository factory class.
- * 
- * @author Ignas
  *
  * @param <T>
  *            Repository type.
@@ -20,7 +18,7 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
  * @param <ID>
  *            Entity ID type.
  */
-public class DefaultRepositoryFactoryBean<T extends JpaRepository<S, ID>, S, ID extends Serializable>
+class DefaultRepositoryFactoryBean<T extends JpaRepository<S, ID>, S, ID extends Serializable>
 		extends JpaRepositoryFactoryBean<T, S, ID> {
 
 	public DefaultRepositoryFactoryBean(Class<? extends T> repositoryInterface) {

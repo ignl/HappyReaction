@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
  *  From React app dates are received as strings and needs to be converted and set from map onto an entity bean
  *  and this is done by commons-beanutils with this converter.
  */
-public class DateTimeConverter implements Converter {
+class DateTimeConverter implements Converter {
 
     /**
      *  {@inheritdoc}
@@ -24,9 +24,10 @@ public class DateTimeConverter implements Converter {
             if (type == LocalDate.class) {
                 return (T) LocalDate.parse((String)value, DateTimeFormatter.ISO_DATE_TIME);
             } else if (type == LocalDateTime.class) {
-                return (T) LocalDateTime.parse((String)value,  DateTimeFormatter.ISO_DATE_TIME);
+                return (T) LocalDateTime.parse((String)value, DateTimeFormatter.ISO_DATE_TIME);
             }
         }
         throw new IllegalStateException("Date converter accepts only String input.");
     }
+
 }

@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Abstract base class for CRUD operations. Supports listing entities with pagination,
  * creating new ones, updating and deleting.
- * 
- * @author Ignas
  *
  * @param <T> Entity class.
  */
@@ -37,7 +35,7 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	 */
 	@RequestMapping(value = "/all", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<List<T>> listAll() {
-		return new ResponseEntity<List<T>>(getService().list(), HttpStatus.OK);
+		return new ResponseEntity<>(getService().list(), HttpStatus.OK);
 	}
 
 	/**
@@ -45,7 +43,7 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	 */
 	@RequestMapping(value = "/allEnumValues", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<List<Object>> listAllEnumValues(@RequestParam("fieldName") String fieldName) {
-		return new ResponseEntity<List<Object>>(getService().getEnumConstants(fieldName), HttpStatus.OK);
+		return new ResponseEntity<>(getService().getEnumConstants(fieldName), HttpStatus.OK);
 	}
 
 	/**
@@ -54,7 +52,7 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	 */
 	@RequestMapping(value = "/search", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
 	public ResponseEntity<List<T>> search(@RequestParam("searchConfig") SearchConfig searchConfig) {
-		return new ResponseEntity<List<T>>(getService().list(searchConfig), HttpStatus.OK);
+		return new ResponseEntity<>(getService().list(searchConfig), HttpStatus.OK);
 	}
 
 	/**
@@ -63,7 +61,7 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	 */
 	@RequestMapping(value = "/count", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
 	public ResponseEntity<Long> count(@RequestParam("searchConfig") SearchConfig searchConfig) {
-		return new ResponseEntity<Long>(getService().count(searchConfig), HttpStatus.OK);
+		return new ResponseEntity<>(getService().count(searchConfig), HttpStatus.OK);
 	}
 
 	/**
@@ -77,7 +75,7 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	 */
 	@RequestMapping(value = "/findById/{id}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
 	public ResponseEntity<T> findById(@PathVariable(value="id") Long id, @RequestParam(value="fetchFields", required=false) List<String> fetchFields) {
-		return new ResponseEntity<T>(getService().findById(id, fetchFields), HttpStatus.OK);
+		return new ResponseEntity<>(getService().findById(id, fetchFields), HttpStatus.OK);
 	}
 
 	/**
@@ -117,6 +115,6 @@ public abstract class CrudController<T extends IEntity> extends ErrorHandlingCon
 	/**
 	 * @return Concrete implementation of service which is injected in super class.
 	 */
-	public abstract Service<T> getService();
+	protected abstract Service<T> getService();
 	
 }

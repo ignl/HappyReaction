@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Abstract class to REST controller for exception handling for REST controller implementation.
- * 
- * @author Ignas
- *
  */
 public abstract class ErrorHandlingController {
 
@@ -57,6 +54,5 @@ public abstract class ErrorHandlingController {
         log.error("[ErrorHandlingController]", exception);
         return new ErrorDTO("Internal server error");
     }
-
 
 }

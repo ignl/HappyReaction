@@ -24,9 +24,7 @@ import com.querydsl.jpa.JPQLQuery;
 /**
  * Custom spring data repository which extends {@link QueryDslJpaRepository} and adds additional methods. It is capable
  * to have some methods accept list of strings which contains what names have to be fetched.
- * 
- * @author Ignas
- * 
+ *
  * @param <T>
  *            Entity type.
  * @param <ID>
@@ -38,19 +36,14 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
 
     private static final long serialVersionUID = 1L;
 
-    /** */
     private final JpaEntityInformation<T, ?> entityInformation;
 
-    /** */
     private final EntityManager em;
 
-    /** */
     private final EntityPath<T> path;
 
-    /** */
     private final PathBuilder<T> builder;
 
-    /** */
     private final Querydsl querydsl;
 
     /**
@@ -59,7 +52,6 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
      * @param entityInformation
      * @param entityManager
      */
-   
     public GenericRepositoryImpl(JpaEntityInformation<T, ID> entityInformation, EntityManager entityManager, // NOPMD
             Class<?> springDataRepositoryInterface) {
         super(entityInformation, entityManager);
@@ -67,7 +59,7 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
         this.em = entityManager;
         this.entityInformation = entityInformation;
         this.path = SimpleEntityPathResolver.INSTANCE.createPath(entityInformation.getJavaType());
-        this.builder = new PathBuilder<T>(path.getType(), path.getMetadata());
+        this.builder = new PathBuilder<>(path.getType(), path.getMetadata());
         this.querydsl = new Querydsl(entityManager, builder);
     }
 
@@ -83,17 +75,17 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
         StringBuilder queryString = new StringBuilder("from " + entityInformation.getJavaType().getSimpleName() + " a");
         if (!fetchFields.isEmpty()) {
             for (String fetchField : fetchFields) {
-                queryString.append(" left join fetch a." + fetchField);
+                queryString.append(" left join fetch a.").append(fetchField);
             }
         }
         queryString.append(" where a.id = :id");
         Query query = em.createQuery(queryString.toString());
         query.setParameter("id", id);
-
+        // TODO typed query
         @SuppressWarnings("unchecked")
         List<T> list = query.getResultList();
 
-        return list.size() > 0 ? (T) list.get(0) : null;
+        return list.size() > 0 ? list.get(0) : null;
     }
 
     /**
@@ -112,18 +104,10 @@ public class GenericRepositoryImpl<T, ID extends Serializable> extends QueryDslJ
 			query.leftJoin(builder.get(fetchField)).fetchJoin();
         }
 
-		return PageableExecutionUtils.getPage(query.fetch(), pageable, new TotalSupplier() {
-
-			@Override
-			public long get() {
-				return countQuery.fetchCount();
-			}
-		});
+		return PageableExecutionUtils.getPage(query.fetch(), pageable, countQuery::fetchCount);
     }
 
     /**
-     *
-     * 
      * {@inheritDoc}
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })

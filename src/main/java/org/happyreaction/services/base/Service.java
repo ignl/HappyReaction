@@ -6,7 +6,6 @@ import java.util.Map;
 import org.happyreaction.model.base.IEntity;
 import org.happyreaction.services.base.search.SearchConfig;
 
-
 /**
  * Base service interface with all provided methods.
  *
@@ -116,8 +115,7 @@ public interface Service<T extends IEntity> {
     List<T> list();
 
     /**
-     * Get entries according to pagination/sorting/filtering data in
-     * PaginationConfiguration.
+     * Get entries according to pagination/sorting/filtering data in {@link SearchConfig}.
      *
      * @param config
      *            Pagination/sorting/filtering data.

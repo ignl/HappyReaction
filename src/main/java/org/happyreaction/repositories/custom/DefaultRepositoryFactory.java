@@ -14,15 +14,10 @@ import org.springframework.util.Assert;
 /**
  * Overridden factory to return custom {@link GenericRepositoryImpl} repository
  * implementation instead of standard spring ones.
- * 
- * @author Ignas
- * 
  */
-public class DefaultRepositoryFactory extends JpaRepositoryFactory {
+class DefaultRepositoryFactory extends JpaRepositoryFactory {
 
 	/**
-	 * Constructor.
-	 * 
 	 * @param entityManager
 	 *            JPA entity manager.
 	 */

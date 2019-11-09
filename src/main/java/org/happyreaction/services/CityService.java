@@ -9,25 +9,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Service implementation for City.
- * 
- * @author Ignas
- *
  */
 @org.springframework.stereotype.Service("cityService")
 public class CityService extends BaseService<City> implements Service<City> {
 
     private static final long serialVersionUID = 1L;
 
-    /** Injected repository. */
     @Autowired
     private CityRepository repository;
     
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected JpaRepository<City, Long> getRepository() {
-        return (JpaRepository) repository;
+        return repository;
     }
 }

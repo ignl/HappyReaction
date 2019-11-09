@@ -10,15 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * REST Webservices controller for Operations. All supported WS methods are mapped to this controller.
- * 
- * @author Ignas
- * 
  */
 @Controller
 @RequestMapping("/operation")
 public class OperationRestController extends CrudController<Operation> {
 
-    /** Injected service. */
     @Autowired
     private OperationService operationService;
 

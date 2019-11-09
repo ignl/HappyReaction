@@ -15,9 +15,7 @@ import com.querydsl.core.types.Predicate;
  * Repository which contains all JPARepository and QueryDslPredicateExecutor
  * methods and also some on its own methods to add missing features of spring
  * data.
- * 
- * @author Ignas
- * 
+ *
  * @param <T>
  * @param <ID>
  */
