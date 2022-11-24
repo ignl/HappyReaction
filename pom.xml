@@ -12,7 +12,7 @@
 		<spring.version>4.3.10.RELEASE</spring.version>
 		<spring.security.version>4.2.3.RELEASE</spring.security.version>
 		<spring.data.version>1.11.6.RELEASE</spring.data.version>
-		<hibernate.version>5.2.10.Final</hibernate.version>
+		<hibernate.version>5.3.20.Final</hibernate.version>
 		<querydsl.version>4.1.4</querydsl.version>
 		<jackson.version>2.9.0</jackson.version>
 		<env>dev</env>
